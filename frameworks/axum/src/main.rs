@@ -70,7 +70,7 @@ async fn post_text(
             Err((
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(payloads::ErrorResponse {
-                    error: "error inserting into mongodb".to_string(),
+                    error: "error inserting into mongodb",
                 }),
             ))
         }
@@ -86,7 +86,7 @@ async fn get_text(
         return Err((
             StatusCode::BAD_REQUEST,
             Json(payloads::ErrorResponse {
-                error: "invalid uuid".to_string(),
+                error: "invalid uuid",
             }),
         ));
     };
@@ -94,19 +94,17 @@ async fn get_text(
         .find_one(bson::to_document(&TextSearchEntry { id }).unwrap())
         .await
     {
-        mongodb::error::Result::Ok(maybe_result) => match maybe_result {
-            Option::Some(result) => Ok(Json(payloads::TextPayload { data: result.data })),
-            Option::None => Err((
-                StatusCode::NOT_FOUND,
-                Json(payloads::ErrorResponse {
-                    error: "not found".to_string(),
-                }),
-            )),
-        },
-        mongodb::error::Result::Err(_error) => Err((
+        Ok(Option::Some(result)) => {
+            Ok(Json(payloads::TextPayload { data: result.data }))
+        }
+        Ok(Option::None) => Err((
+            StatusCode::NOT_FOUND,
+            Json(payloads::ErrorResponse { error: "not found" }),
+        )),
+        Err(_error) => Err((
             StatusCode::INTERNAL_SERVER_ERROR,
             Json(payloads::ErrorResponse {
-                error: "error with mongodb".to_string(),
+                error: "error with mongodb",
             }),
         )),
     }

@@ -23,5 +23,5 @@ pub struct InsertedResponse {
 
 #[derive(Serialize)]
 pub struct ErrorResponse {
-    pub error: String,
+    pub error: &'static str,
 }
