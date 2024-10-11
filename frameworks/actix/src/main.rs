@@ -127,11 +127,8 @@ async fn search_text(
         let response = ErrorResponse {
             error: format!("term is not allowed to contain whitspaces: {term}"),
         };
-        info!("contaisn whitespace");
         return HttpResponse::BadRequest().json(response);
     }
-
-    info!("SEARCH");
 
     let collection = client.database(DB_NAME).collection::<MongoText>(COLL_NAME);
     let find_one = collection.find_one(doc! { "_id": uuid_to_bson(&uuid)});
