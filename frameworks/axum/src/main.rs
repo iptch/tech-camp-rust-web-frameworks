@@ -15,7 +15,7 @@ mod config;
 
 // payloads
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 struct TextPayload {
     data: String,
 }
@@ -85,8 +85,22 @@ async fn main() -> io::Result<()> {
     Ok(())
 }
 
-async fn post_text(State(_state): State<Arc<AppState>>, text_payload: TextPayload) {
+async fn post_text(State(_state): State<Arc<AppState>>, text_payload: TextPayload) -> Result<String, &'static str> {
     println!("post \"{}\"", text_payload.data);
+    let client: &mongodb::Client = &_state._client;
+    match client.database("asdf").collection::<TextPayload>("asdf").insert_one(text_payload).await {
+        mongodb::error::Result::Ok(
+            mongodb::results::InsertOneResult{inserted_id: bson::Bson::ObjectId(object_id), ..}) => {
+            Ok(object_id.to_hex())
+        }
+        mongodb::error::Result::Ok(_) => {
+            Err("unexpected result type")
+        }
+        mongodb::error::Result::Err(error) => {
+            println!("{:?}", error);
+            Err("error inserting in mongodb")
+        }
+    }
 }
 async fn get_text(State(_state): State<Arc<AppState>>, Path(text_id): Path<String>) {
     println!("get {}", text_id);
