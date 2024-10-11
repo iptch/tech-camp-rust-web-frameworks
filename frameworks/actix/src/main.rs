@@ -36,12 +36,17 @@ struct UUIDResponse {
 
 #[derive(Debug, Deserialize, Serialize)]
 struct FoundResponse {
-    fount: bool,
+    found: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 struct ErrorResponse {
     error: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+struct Query {
+    term: String,
 }
 
 #[post("/texts")]
@@ -112,8 +117,44 @@ async fn get_text(client: web::Data<Client>, uuid: web::Path<Uuid>) -> impl Resp
 }
 
 #[get("/texts/{uuid}/search")]
-async fn search_text(uuid: web::Path<Uuid>, term: web::Query<String>) -> impl Responder {
-    format!("searching {uuid} for \"{term}\"")
+async fn search_text(
+    client: web::Data<Client>,
+    uuid: web::Path<Uuid>,
+    term: web::Query<Query>,
+) -> impl Responder {
+    let term = term.term.to_owned();
+    if term.contains(char::is_whitespace) {
+        let response = ErrorResponse {
+            error: format!("term is not allowed to contain whitspaces: {term}"),
+        };
+        info!("contaisn whitespace");
+        return HttpResponse::BadRequest().json(response);
+    }
+
+    info!("SEARCH");
+
+    let collection = client.database(DB_NAME).collection::<MongoText>(COLL_NAME);
+    let find_one = collection.find_one(doc! { "_id": uuid_to_bson(&uuid)});
+    match find_one.await {
+        Err(err) => {
+            let response = ErrorResponse {
+                error: format!("Failed to search DB: {err}"),
+            };
+            HttpResponse::InternalServerError().json(response)
+        }
+        Ok(None) => {
+            let response = ErrorResponse {
+                error: "UUID does not exist".to_string(),
+            };
+            HttpResponse::NotFound().json(response)
+        }
+        Ok(Some(mongo_text)) => {
+            let response = FoundResponse {
+                found: mongo_text.data.contains(&term),
+            };
+            HttpResponse::Ok().json(response)
+        }
+    }
 }
 
 fn uuid_to_bson(uuid: &Uuid) -> bson::Bson {
@@ -142,6 +183,7 @@ async fn main() -> std::io::Result<()> {
             .service(save_text)
             .service(delete_text)
             .service(get_text)
+            .service(search_text)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
