@@ -14,9 +14,7 @@ mod entries;
 mod payloads;
 mod state;
 
-// payloads
 
-// main
 #[tokio::main]
 async fn main() -> io::Result<()> {
     let config_text = fs::read_to_string("config.toml").await?;
@@ -62,10 +60,10 @@ async fn post_text(
         data: text_payload.data,
     };
     match client.insert_one(entry).await {
-        mongodb::error::Result::Ok(_) => {
+        Ok(_) => {
             Ok((StatusCode::CREATED, Json(payloads::InsertedResponse { id })))
         }
-        mongodb::error::Result::Err(error) => {
+        Err(error) => {
             println!("{:?}", error);
             Err((
                 StatusCode::INTERNAL_SERVER_ERROR,
@@ -94,14 +92,12 @@ async fn get_text(
         .find_one(bson::to_document(&TextSearchEntry { id }).unwrap())
         .await
     {
-        Ok(Option::Some(result)) => {
-            Ok(Json(payloads::TextPayload { data: result.data }))
-        }
-        Ok(Option::None) => Err((
+        Ok(Some(result)) => Ok(Json(payloads::TextPayload { data: result.data })),
+        Ok(None) => Err((
             StatusCode::NOT_FOUND,
             Json(payloads::ErrorResponse { error: "not found" }),
         )),
-        Err(_error) => Err((
+        Err(_) => Err((
             StatusCode::INTERNAL_SERVER_ERROR,
             Json(payloads::ErrorResponse {
                 error: "error with mongodb",
@@ -109,8 +105,41 @@ async fn get_text(
         )),
     }
 }
-async fn delete_text(State(_state): State<Arc<state::MongoAppState>>, Path(text_id): Path<String>) {
-    println!("delete {}", text_id);
+async fn delete_text(
+    State(_state): State<Arc<state::MongoAppState>>,
+    Path(text_id): Path<String>,
+) -> Result<StatusCode, (StatusCode, Json<payloads::ErrorResponse>)> {
+    let client = _state.client();
+    let Ok(id) = uuid::Uuid::try_parse(&text_id) else {
+        return Err((
+            StatusCode::BAD_REQUEST,
+            Json(payloads::ErrorResponse {
+                error: "invalid uuid",
+            }),
+        ));
+    };
+    match client
+        .delete_one(bson::to_document(&TextSearchEntry { id }).unwrap())
+        .await
+    {
+        Ok(result) => {
+            if result.deleted_count == 0 {
+                Err((
+                    StatusCode::NOT_FOUND,
+                    Json(payloads::ErrorResponse { error: "not found" }),
+                ))
+            } else {
+                // we could probably check to make sure the count is 1 here
+                Ok(StatusCode::NO_CONTENT)
+            }
+        }
+        Err(_) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(payloads::ErrorResponse {
+                error: "error with mongodb",
+            }),
+        )),
+    }
 }
 
 async fn search_text(
