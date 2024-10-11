@@ -51,13 +51,22 @@ pub async fn post_text(db: Connection<TextsDatabase>, msg: Json<Message<'_>>) ->
 }
 
 #[delete("/texts/<uuid>")]
-pub async fn delete_text(uuid: Uuid) -> Status {
-    println!("got uuid: {uuid}");
-    // Success: 204 No Content
-    // Invalid UUID -> 400 Bad Request
-    // UUID does not exist -> 404 Not Found
-    // Server-side error 500 Internal Server Error
-    Status::NoContent
+pub async fn delete_text(db: Connection<TextsDatabase>, uuid: Uuid) -> (Status, Value) {
+    let collection = db.database("techcamp").collection::<Text>("texts");
+    match collection
+        .delete_one(doc! { "_id": uuid_to_bson(&uuid)}, None)
+        .await
+    {
+        Err(e) => (
+            Status::InternalServerError,
+            json!({"error": format!("error deleting from database: {e}")}),
+        ),
+        Ok(result) => match result.deleted_count {
+            0 => (Status::NotFound, json!({"error": "text not found"})),
+            1 => (Status::NoContent, Value::default()),
+            _ => (Status::Gone, Value::default()),
+        },
+    }
 }
 
 #[get("/texts/<uuid>")]
