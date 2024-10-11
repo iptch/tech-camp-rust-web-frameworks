@@ -1,17 +1,11 @@
-use axum::extract::Query;
-use axum::routing::get;
 use axum::extract::Path;
+use axum::extract::Query;
 use axum::extract::Request;
+use axum::routing::get;
 use axum::{async_trait, Json};
-use axum::{
-    extract::FromRequest,
-    http::StatusCode,
-    routing::post,
-    Router,
-};
+use axum::{extract::FromRequest, http::StatusCode, routing::post, Router};
 use serde::Deserialize;
 use serde::Serialize;
-
 
 #[derive(Deserialize)]
 struct TextPayload {
@@ -24,7 +18,7 @@ struct SearchParams {
 
 #[derive(Serialize)]
 struct SearchResponse {
-    found: bool
+    found: bool,
 }
 
 #[derive(Serialize)]
@@ -60,7 +54,6 @@ async fn main() {
         .route("/texts/:text_id", get(get_text).delete(delete_text))
         .route("/texts/:text_id/search", get(search_text));
 
-
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
@@ -76,7 +69,10 @@ async fn delete_text(Path(text_id): Path<String>) {
     println!("delete {}", text_id);
 }
 
-async fn search_text(Path(text_id): Path<String>, params: Query<SearchParams>) -> Result<Json<SearchResponse>, StatusCode> {
+async fn search_text(
+    Path(text_id): Path<String>,
+    params: Query<SearchParams>,
+) -> Result<Json<SearchResponse>, StatusCode> {
     println!("search {} for {}", text_id, params.term);
     Err(StatusCode::BAD_REQUEST)
 }
