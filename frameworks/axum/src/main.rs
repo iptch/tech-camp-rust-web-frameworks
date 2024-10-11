@@ -1,3 +1,4 @@
+use axum::extract::Query;
 use axum::routing::get;
 use axum::extract::Path;
 use axum::extract::Request;
@@ -11,12 +12,22 @@ use axum::{
 use serde::Deserialize;
 use serde::Serialize;
 
+
 #[derive(Deserialize)]
 struct TextPayload {
     data: String,
 }
+#[derive(Deserialize)]
+struct SearchParams {
+    term: String,
+}
 
-#[derive(Deserialize, Serialize)]
+#[derive(Serialize)]
+struct SearchResponse {
+    found: bool
+}
+
+#[derive(Serialize)]
 struct ErrorPayload {
     error: String,
 }
@@ -46,7 +57,8 @@ async fn main() {
     // build our application with a single route
     let app = Router::new()
         .route("/texts", post(post_text))
-        .route("/texts/:text_id", get(get_text).delete(delete_text));
+        .route("/texts/:text_id", get(get_text).delete(delete_text))
+        .route("/texts/:text_id/search", get(search_text));
 
 
     // run our app with hyper, listening globally on port 3000
@@ -62,4 +74,9 @@ async fn get_text(Path(text_id): Path<String>) {
 }
 async fn delete_text(Path(text_id): Path<String>) {
     println!("delete {}", text_id);
+}
+
+async fn search_text(Path(text_id): Path<String>, params: Query<SearchParams>) -> Result<Json<SearchResponse>, StatusCode> {
+    println!("search {} for {}", text_id, params.term);
+    Err(StatusCode::BAD_REQUEST)
 }
