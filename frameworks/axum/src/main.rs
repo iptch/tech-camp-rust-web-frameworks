@@ -14,7 +14,6 @@ mod entries;
 mod payloads;
 mod state;
 
-
 #[tokio::main]
 async fn main() -> io::Result<()> {
     let config_text = fs::read_to_string("config.toml").await?;
@@ -53,16 +52,13 @@ async fn post_text(
 > {
     println!("post \"{}\"", text_payload.data);
 
-    let client = &state.client();
     let id = uuid::Uuid::new_v4();
     let entry = entries::TextEntry {
         id,
         data: text_payload.data,
     };
-    match client.insert_one(entry).await {
-        Ok(_) => {
-            Ok((StatusCode::CREATED, Json(payloads::InsertedResponse { id })))
-        }
+    match state.client().insert_one(entry).await {
+        Ok(_) => Ok((StatusCode::CREATED, Json(payloads::InsertedResponse { id }))),
         Err(error) => {
             println!("{:?}", error);
             Err((
@@ -75,11 +71,10 @@ async fn post_text(
     }
 }
 async fn get_text(
-    State(_state): State<Arc<state::MongoAppState>>,
+    State(state): State<Arc<state::MongoAppState>>,
     Path(text_id): Path<String>,
 ) -> Result<Json<payloads::TextPayload>, (StatusCode, Json<payloads::ErrorResponse>)> {
     println!("get {}", text_id);
-    let client = &_state.client();
     let Ok(id) = uuid::Uuid::try_parse(&text_id) else {
         return Err((
             StatusCode::BAD_REQUEST,
@@ -88,7 +83,8 @@ async fn get_text(
             }),
         ));
     };
-    match client
+    match state
+        .client()
         .find_one(bson::to_document(&TextSearchEntry { id }).unwrap())
         .await
     {
@@ -106,10 +102,9 @@ async fn get_text(
     }
 }
 async fn delete_text(
-    State(_state): State<Arc<state::MongoAppState>>,
+    State(state): State<Arc<state::MongoAppState>>,
     Path(text_id): Path<String>,
 ) -> Result<StatusCode, (StatusCode, Json<payloads::ErrorResponse>)> {
-    let client = _state.client();
     let Ok(id) = uuid::Uuid::try_parse(&text_id) else {
         return Err((
             StatusCode::BAD_REQUEST,
@@ -118,7 +113,8 @@ async fn delete_text(
             }),
         ));
     };
-    match client
+    match state
+        .client()
         .delete_one(bson::to_document(&TextSearchEntry { id }).unwrap())
         .await
     {
@@ -143,10 +139,37 @@ async fn delete_text(
 }
 
 async fn search_text(
-    State(_state): State<Arc<state::MongoAppState>>,
+    State(state): State<Arc<state::MongoAppState>>,
     Path(text_id): Path<String>,
-    params: Query<payloads::SearchParams>,
-) -> Result<Json<payloads::SearchResponse>, StatusCode> {
+    Query(params): Query<payloads::SearchParams>,
+) -> Result<Json<payloads::SearchResponse>, (StatusCode, Json<payloads::ErrorResponse>)> {
     println!("search {} for {}", text_id, params.term);
-    Err(StatusCode::BAD_REQUEST)
+    let Ok(id) = uuid::Uuid::try_parse(&text_id) else {
+        return Err((
+            StatusCode::BAD_REQUEST,
+            Json(payloads::ErrorResponse {
+                error: "invalid uuid",
+            }),
+        ));
+    };
+    match state
+        .client()
+        .find_one(bson::to_document(&TextSearchEntry { id }).unwrap())
+        .await
+    {
+        Ok(Some(result)) => {
+            let found = result.data.contains(&params.term);
+            Ok(Json(payloads::SearchResponse { found }))
+        }
+        Ok(None) => Err((
+            StatusCode::NOT_FOUND,
+            Json(payloads::ErrorResponse { error: "not found" }),
+        )),
+        Err(_) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(payloads::ErrorResponse {
+                error: "error with mongodb",
+            }),
+        )),
+    }
 }
