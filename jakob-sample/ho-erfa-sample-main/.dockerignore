@@ -1,0 +1,7 @@
+/.git
+/target/
+/Dockerfile
+/.dockerignore
+/.gitignore
+/*.md
+/tags

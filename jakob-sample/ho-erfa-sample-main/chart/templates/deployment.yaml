@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jbe-ho-erfa.fullname" . }}
+  labels:
+    {{- include "jbe-ho-erfa.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "jbe-ho-erfa.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "jbe-ho-erfa.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: app
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 500m
+            limits:
+              memory: 2Gi
+              cpu: 2
+        - name: redis
+          image: "{{ .Values.redis.repository }}:{{ .Values.redis.tag }}"
+          imagePullPolicy: {{ .Values.redis.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 6379
+              protocol: TCP
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 500m
+            limits:
+              memory: 2Gi
+              cpu: 2
+      volumes:
+        - name: rocket-config
+          configMap:
+            name: {{ include "jbe-ho-erfa.fullname" . }}
+            items:
+              - key: rocket-config
+                path: Rocket.toml

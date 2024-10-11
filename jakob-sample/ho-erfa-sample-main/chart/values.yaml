@@ -1,0 +1,30 @@
+replicaCount: 1
+
+image:
+  repository: registry.localhost:5000/jbe/ho-erfa
+  pullPolicy: Always
+  tag: "0.1.0"
+
+redis:
+  repository: redis
+  pullPolicy: IfNotPresent
+  tag: "7.0.4-bullseye"
+
+ingress:
+  host: localhost
+
+rocket: |
+  [default]
+  address = "0.0.0.0"
+  limits = { json = "10 MiB" }
+  [default.databases.redis]
+  url = "redis://127.0.0.1:6379"
+  min_connections = 16
+  # max_connections = 1024
+  connect_timeout = 5
+  idle_timeout = 120
+  [default.databases.mongo]
+  url = "mongodb://mongo-mongodb-sharded:27017"
+  min_connections = 16
+  connect_timeout = 5
+  idle_timeout = 120

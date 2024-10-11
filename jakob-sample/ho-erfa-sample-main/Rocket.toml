@@ -1,0 +1,16 @@
+[default]
+address = "0.0.0.0"
+limits = { json = "10 MiB" }
+
+[default.databases.redis]
+url = "redis://127.0.0.1:6379"
+min_connections = 16
+# max_connections = 1024
+connect_timeout = 5
+idle_timeout = 120
+
+[default.databases.mongo]
+url = "mongodb://root:jbe@mongo-mongodb-sharded:27017"
+min_connections = 16
+connect_timeout = 5
+idle_timeout = 120
