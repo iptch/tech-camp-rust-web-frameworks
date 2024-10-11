@@ -1,11 +1,19 @@
 use axum::extract::Path;
 use axum::extract::Query;
 use axum::extract::Request;
+use axum::extract::State;
 use axum::routing::get;
 use axum::{async_trait, Json};
 use axum::{extract::FromRequest, http::StatusCode, routing::post, Router};
 use serde::Deserialize;
 use serde::Serialize;
+use std::sync::Arc;
+use tokio::fs;
+use tokio::io;
+
+mod config;
+
+// payloads
 
 #[derive(Deserialize)]
 struct TextPayload {
@@ -46,30 +54,49 @@ where
     }
 }
 
+// main
+
+struct AppState {
+    _client: mongodb::Client,
+}
+
 #[tokio::main]
-async fn main() {
+async fn main() -> io::Result<()> {
+    let config_text = fs::read_to_string("config.toml").await?;
+    let config: config::Config = toml::from_str(&config_text).unwrap();
+    println!("{:?}", config);
+
+    let client = mongodb::Client::with_uri_str(config.mongodb.host)
+        .await
+        .unwrap();
+
+    let shared_state = std::sync::Arc::new(AppState { _client: client });
+
     // build our application with a single route
     let app = Router::new()
         .route("/texts", post(post_text))
         .route("/texts/:text_id", get(get_text).delete(delete_text))
-        .route("/texts/:text_id/search", get(search_text));
+        .route("/texts/:text_id/search", get(search_text))
+        .with_state(shared_state);
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
+    Ok(())
 }
 
-async fn post_text(text_payload: TextPayload) {
+async fn post_text(State(_state): State<Arc<AppState>>, text_payload: TextPayload) {
     println!("post \"{}\"", text_payload.data);
 }
-async fn get_text(Path(text_id): Path<String>) {
+async fn get_text(State(_state): State<Arc<AppState>>, Path(text_id): Path<String>) {
     println!("get {}", text_id);
 }
-async fn delete_text(Path(text_id): Path<String>) {
+async fn delete_text(State(_state): State<Arc<AppState>>, Path(text_id): Path<String>) {
     println!("delete {}", text_id);
 }
 
 async fn search_text(
+    State(_state): State<Arc<AppState>>,
     Path(text_id): Path<String>,
     params: Query<SearchParams>,
 ) -> Result<Json<SearchResponse>, StatusCode> {
