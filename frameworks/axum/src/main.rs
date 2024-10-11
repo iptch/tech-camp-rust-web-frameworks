@@ -1,9 +1,11 @@
+use axum::routing::get;
+use axum::extract::Path;
 use axum::extract::Request;
 use axum::{async_trait, Json};
 use axum::{
     extract::FromRequest,
     http::StatusCode,
-    routing::{get, post},
+    routing::post,
     Router,
 };
 use serde::Deserialize;
@@ -43,8 +45,9 @@ where
 async fn main() {
     // build our application with a single route
     let app = Router::new()
-        .route("/", get(|| async { "Hello, World!" }))
-        .route("/texts", post(post_text));
+        .route("/texts", post(post_text))
+        .route("/texts/:text_id", get(get_text).delete(delete_text));
+
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
@@ -52,5 +55,11 @@ async fn main() {
 }
 
 async fn post_text(text_payload: TextPayload) {
-    println!("{}", text_payload.data);
+    println!("post \"{}\"", text_payload.data);
+}
+async fn get_text(Path(text_id): Path<String>) {
+    println!("get {}", text_id);
+}
+async fn delete_text(Path(text_id): Path<String>) {
+    println!("delete {}", text_id);
 }
