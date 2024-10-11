@@ -4,6 +4,11 @@ use rocket::serde::{
     json::{json, Json, Value},
     Deserialize, Serialize,
 };
+use rocket_db_pools::{mongodb, Connection, Database};
+
+#[derive(Database)]
+#[database("texts")]
+pub struct TextsDatabase(mongodb::Client);
 
 #[derive(Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
@@ -11,16 +16,29 @@ pub struct Message<'m> {
     pub data: &'m str,
 }
 
-#[post("/texts", format = "application/json", data = "<msg>")]
-pub async fn post_text(msg: Json<Message<'_>>) -> (Status, Value) {
-    let id = Uuid::new_v4();
+#[derive(Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct Text {
+    id: Uuid,
+    text: String,
+}
 
-    println!("got the message: {}", msg.data);
-    // Payload up to 10Mib
-    // Success: 201 with UUID of text id in database
-    // 400 Bad Request for invalid payload
-    // 500 Internal Server Error for server-side errors
-    (Status::Created, json!(id))
+#[post("/texts", format = "application/json", data = "<msg>")]
+pub async fn post_text(db: Connection<TextsDatabase>, msg: Json<Message<'_>>) -> (Status, Value) {
+    let id = Uuid::new_v4();
+    let collection = db.database("techcamp").collection::<Text>("texts");
+    let new_text = Text {
+        id,
+        text: msg.data.to_string(),
+    };
+
+    match collection.insert_one(new_text, None).await {
+        Ok(_) => (Status::Created, json!(id)),
+        Err(e) => (
+            Status::InternalServerError,
+            json!({"error": format!("failed to insert text into database: {e}")}),
+        ),
+    }
 }
 
 #[delete("/texts/<uuid>")]
