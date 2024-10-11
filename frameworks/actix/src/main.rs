@@ -19,6 +19,12 @@ struct MongoText {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+struct MongoID {
+    #[serde(rename = "_id")]
+    id: Uuid,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
 struct TextResponse {
     data: String,
 }
@@ -39,7 +45,7 @@ struct ErrorResponse {
 }
 
 #[post("/texts")]
-async fn save_text(client: web::Data<Client>, payload: web::Json<MongoText>) -> impl Responder {
+async fn save_text(client: web::Data<Client>, payload: web::Json<TextResponse>) -> impl Responder {
     let text = MongoText {
         id: Uuid::new_v4(),
         data: payload.data.to_owned(),
@@ -61,7 +67,8 @@ async fn save_text(client: web::Data<Client>, payload: web::Json<MongoText>) -> 
 #[delete("/texts/{uuid}")]
 async fn delete_text(client: web::Data<Client>, uuid: web::Path<Uuid>) -> impl Responder {
     let collection = client.database(DB_NAME).collection::<MongoText>(COLL_NAME);
-    let delete_one = collection.delete_one(doc! { "_id": uuid_to_bson(&uuid)});
+
+    let delete_one = collection.delete_one(doc! { "_id": uuid_to_bson(&uuid) });
     match delete_one.await {
         Err(err) => {
             let response = ErrorResponse {
@@ -79,8 +86,29 @@ async fn delete_text(client: web::Data<Client>, uuid: web::Path<Uuid>) -> impl R
 }
 
 #[get("/texts/{uuid}")]
-async fn get_text(uuid: web::Path<Uuid>) -> impl Responder {
-    format!("get text {uuid}")
+async fn get_text(client: web::Data<Client>, uuid: web::Path<Uuid>) -> impl Responder {
+    let collection = client.database(DB_NAME).collection::<MongoText>(COLL_NAME);
+    let find_one = collection.find_one(doc! { "_id": uuid_to_bson(&uuid)});
+    match find_one.await {
+        Err(err) => {
+            let response = ErrorResponse {
+                error: format!("Failed to search DB: {err}"),
+            };
+            HttpResponse::InternalServerError().json(response)
+        }
+        Ok(None) => {
+            let response = ErrorResponse {
+                error: "UUID does not exist".to_string(),
+            };
+            HttpResponse::NotFound().json(response)
+        }
+        Ok(Some(mongo_text)) => {
+            let response = TextResponse {
+                data: mongo_text.data,
+            };
+            HttpResponse::Ok().json(response)
+        }
+    }
 }
 
 #[get("/texts/{uuid}/search")]
