@@ -1,4 +1,5 @@
-use bson::{doc, SerializerOptions};
+use mongodb::bson::{doc, SerializerOptions};
+use rocket::form::validate::Contains;
 use rocket::http::Status;
 use rocket::serde::uuid::Uuid;
 use rocket::serde::{
@@ -25,7 +26,7 @@ pub struct Text {
 }
 
 #[allow(deprecated)]
-fn uuid_to_bson(uuid: &Uuid) -> bson::Bson {
+fn uuid_to_bson(uuid: &Uuid) -> mongodb::bson::Bson {
     // Despite this being deprecated it is currently necessary to make the webserver work,
     // otherwise UUIDs won't be matched when searching or deleting
     let options = SerializerOptions::builder().human_readable(false).build();
@@ -69,13 +70,19 @@ pub async fn delete_text(db: Connection<TextsDatabase>, uuid: Uuid) -> (Status, 
     }
 }
 
+async fn get_from_database(
+    db: Connection<TextsDatabase>,
+    uuid: Uuid,
+) -> mongodb::error::Result<Option<Text>> {
+    let collection = db.database("techcamp").collection::<Text>("texts");
+    collection
+        .find_one(doc! { "_id": uuid_to_bson(&uuid)}, None)
+        .await
+}
+
 #[get("/texts/<uuid>")]
 pub async fn get_text(db: Connection<TextsDatabase>, uuid: Uuid) -> (Status, Value) {
-    let collection = db.database("techcamp").collection::<Text>("texts");
-    match collection
-        .find_one(doc! {"_id": uuid_to_bson(&uuid)}, None)
-        .await
-    {
+    match get_from_database(db, uuid).await {
         Err(e) => (
             Status::InternalServerError,
             json!({"error": format!("error searching database: {e}")}),
@@ -91,13 +98,21 @@ pub async fn get_text(db: Connection<TextsDatabase>, uuid: Uuid) -> (Status, Val
 }
 
 #[get("/texts/<uuid>/search?<term>")]
-pub async fn get_search(uuid: String, term: &str) -> (Status, Value) {
-    // Success: 200 OK
-    // Invalid UUID or term -> 400 Bad Request
-    // UUID does not exist -> 404 Not Found
-    // Server side error 500
-    (
-        Status::Ok,
-        json!({"found": true, "uuid": uuid, "term": term}),
-    )
+pub async fn get_search(db: Connection<TextsDatabase>, uuid: Uuid, term: &str) -> (Status, Value) {
+    match get_from_database(db, uuid).await {
+        Err(e) => (
+            Status::InternalServerError,
+            json!({"error": format!("error searching database: {e}")}),
+        ),
+        Ok(result) => match result {
+            None => (
+                Status::NotFound,
+                json!({"error": "text not found".to_owned()}),
+            ),
+            Some(text) => {
+                let found = text.text.contains(term);
+                (Status::Ok, json!({"found": found}))
+            }
+        },
+    }
 }
