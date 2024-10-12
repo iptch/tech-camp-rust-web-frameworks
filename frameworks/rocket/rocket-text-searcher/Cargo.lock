@@ -1422,6 +1422,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "rocket-text-searcher"
+version = "0.1.0"
+dependencies = [
+ "bson",
+ "rocket",
+ "rocket_db_pools",
+ "uuid",
+]
+
+[[package]]
 name = "rocket_codegen"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1870,16 +1880,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "text-searcher"
-version = "0.1.0"
-dependencies = [
- "bson",
- "rocket",
- "rocket_db_pools",
- "uuid",
-]
-
-[[package]]
 name = "thiserror"
 version = "1.0.64"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2265,18 +2265,6 @@ dependencies = [
  "getrandom",
  "rand",
  "serde",
- "uuid-macro-internal",
-]
-
-[[package]]
-name = "uuid-macro-internal"
-version = "1.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ee1cd046f83ea2c4e920d6ee9f7c3537ef928d75dce5d84a87c2c5d6b3999a3a"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.79",
 ]
 
 [[package]]

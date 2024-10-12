@@ -1,5 +1,5 @@
 [package]
-name = "text-searcher"
+name = "rocket-text-searcher"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,4 +10,4 @@ bson = { version = "2.13.0" }
 
 [dependencies.uuid]
 version = "1.10.0"
-features = ["v4", "fast-rng", "macro-diagnostics"]
+features = ["v4", "fast-rng"]
