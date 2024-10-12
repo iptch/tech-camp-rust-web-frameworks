@@ -6,7 +6,7 @@ env:
   - name: ROCKET_PORT
     value: "8000"
   - name: ROCKET_LIMITS
-    value: '{json=\"10MiB\"}'
+    value: '{json="10MiB"}'
 image:
   repository: jklsuperuniqueregistry.azurecr.io/rocket-text-searcher
   tag: 0.1.0
