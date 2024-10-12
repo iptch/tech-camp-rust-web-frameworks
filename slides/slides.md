@@ -15,12 +15,51 @@ highlightjs: true
 
 ## Ergonomics / Hands-On Feel
 
+<pre data-id="code-animation"><code data-trim data-line-numbers="|1,5" rust>
+#[derive(Debug, Deserialize, Serialize)]
+struct ErrorResponse {
+    error: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+struct Query {
+    term: String,
+}
+
+#[get("/texts/{uuid}/search")]
+async fn my_endpoint(
+    client: web::Data<Client>,
+    uuid: web::Path<Uuid>,
+    term: web::Query<Query>,
+) -> impl Responder {
+
+    // .. do something
+
+    HttpResponse::Ok().json(response)
+}
+
+#[actix_web::main] // or #[tokio::main]
+async fn main() -> std::io::Result<()> {
+    let uri = env::var("MONGODB_URI").unwrap_or_else(|_| "mongodb://localhost:27017".into());
+    let client = Client::with_uri_str(uri).await.expect("failed to connect");
+
+    HttpServer::new(move || {
+        App::new()
+            .wrap(Logger::default())
+            .app_data(web::Data::new(client.clone()))
+            .service(my_endpoint)
+    })
+    .bind(("0.0.0.0", 8080))?
+    .run()
+    .await
+}
+</code></pre>
+
 ## Benchmark
 
 # Axum
 
 ## Ergonomics / Hands-On Feel
-
 
 <pre data-id="code-animation"><code data-trim data-line-numbers="|2-4|9|10" rust>
     let app = Router::new()
@@ -126,7 +165,7 @@ pub async fn get(db: Connection<MyDatabase>, uuid: Uuid) -> (Status, Value) {
             json!({"error": format!("error searching database: {e}")}),
         ),
         Ok(result) => (
-            Status::Ok, 
+            Status::Ok,
             json!({"data": text.text.to_owned()}),
         ),
     },
@@ -144,7 +183,6 @@ fn rocket() -> _ {
 
 Will update this when available ...
 
-
 ## Immutability {data-auto-animate=true}
 
 <pre data-id="code-animation"><code data-trim data-line-numbers="2,4" rust>
@@ -157,6 +195,7 @@ fn main() {
 </code></pre>
 
 ::: notes
+
 - typing is still respected, cannot change type of variable, even with `mut`
 :::
 
@@ -167,5 +206,3 @@ let x = String::from("hello");
 let y = x;
 println!("{}", x); // invalid
 ```
-
-
