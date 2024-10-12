@@ -17,5 +17,6 @@ env:
 image:
   repository: jklsuperuniqueregistry.azurecr.io/rocket-text-searcher
   tag: 0.1.0
+  pullPolicy: Always
 service:
   port: 8000

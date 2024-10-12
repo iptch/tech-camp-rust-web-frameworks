@@ -5,6 +5,7 @@ use axum::routing::get;
 use axum::Json;
 use axum::{http::StatusCode, routing::post, Router};
 use entries::TextSearchEntry;
+use tower_http::trace::TraceLayer;
 use std::env;
 use std::sync::Arc;
 
@@ -16,6 +17,8 @@ mod state;
 async fn main() -> anyhow::Result<()> {
     let mongodb_host = env::var("MONGODB_HOST")?;
 
+    tracing_subscriber::fmt::init();
+
     let client = mongodb::Client::with_uri_str(mongodb_host).await.unwrap();
 
     let shared_state = std::sync::Arc::new(state::MongoAppState::new(client));
@@ -25,6 +28,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/texts", post(post_text))
         .route("/texts/:text_id", get(get_text).delete(delete_text))
         .route("/texts/:text_id/search", get(search_text))
+        .layer(TraceLayer::new_for_http())
         .with_state(shared_state);
 
     // run our app with hyper, listening globally on port 3000
@@ -40,7 +44,6 @@ async fn post_text(
     (StatusCode, Json<payloads::InsertedResponse>),
     (StatusCode, Json<payloads::ErrorResponse>),
 > {
-    println!("post \"{}\"", text_payload.data);
 
     let id = uuid::Uuid::new_v4();
     let entry = entries::TextEntry {
@@ -49,8 +52,7 @@ async fn post_text(
     };
     match state.client().insert_one(entry).await {
         Ok(_) => Ok((StatusCode::CREATED, Json(payloads::InsertedResponse { id }))),
-        Err(error) => {
-            println!("{:?}", error);
+        Err(_error) => {
             Err((
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(payloads::ErrorResponse {
@@ -64,7 +66,6 @@ async fn get_text(
     State(state): State<Arc<state::MongoAppState>>,
     Path(text_id): Path<String>,
 ) -> Result<Json<payloads::TextPayload>, (StatusCode, Json<payloads::ErrorResponse>)> {
-    println!("get {}", text_id);
     let Ok(id) = uuid::Uuid::try_parse(&text_id) else {
         return Err((
             StatusCode::BAD_REQUEST,
@@ -133,7 +134,6 @@ async fn search_text(
     Path(text_id): Path<String>,
     Query(params): Query<payloads::SearchParams>,
 ) -> Result<Json<payloads::SearchResponse>, (StatusCode, Json<payloads::ErrorResponse>)> {
-    println!("search {} for {}", text_id, params.term);
     let Ok(id) = uuid::Uuid::try_parse(&text_id) else {
         return Err((
             StatusCode::BAD_REQUEST,

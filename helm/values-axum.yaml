@@ -8,8 +8,11 @@ resources:
 env:
   - name: MONGODB_HOST
     value: "mongodb://mongodb:27017"
+  - name: RUST_LOG
+    value: "tower_http=trace"
 image:
   repository: jklsuperuniqueregistry.azurecr.io/novelty
   tag: latest
+  pullPolicy: Always
 service:
   port: 3000
