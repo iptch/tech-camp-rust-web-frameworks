@@ -3,18 +3,6 @@
 version = 3
 
 [[package]]
-name = "actix"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "env_logger",
- "log",
- "mongodb",
- "serde",
- "uuid",
-]
-
-[[package]]
 name = "actix-codec"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -131,6 +119,18 @@ dependencies = [
  "futures-core",
  "paste",
  "pin-project-lite",
+]
+
+[[package]]
+name = "actix-test"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "env_logger",
+ "log",
+ "mongodb",
+ "serde",
+ "uuid",
 ]
 
 [[package]]
