@@ -5,29 +5,22 @@ use axum::routing::get;
 use axum::Json;
 use axum::{http::StatusCode, routing::post, Router};
 use entries::TextSearchEntry;
-use std::fs;
+use std::env;
 use std::sync::Arc;
 
-mod config;
 mod entries;
 mod payloads;
 mod state;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let config_text = fs::read_to_string("config.toml")?;
-    let config: config::Config = toml::from_str(&config_text)?;
-    println!("{:?}", config);
+    let mongodb_host = env::var("MONGODB_HOST")?;
 
-    let client = mongodb::Client::with_uri_str(config.mongodb.host)
+    let client = mongodb::Client::with_uri_str(mongodb_host)
         .await
         .unwrap();
 
-    let shared_state = std::sync::Arc::new(state::MongoAppState::new(
-        client,
-        config.mongodb.database,
-        config.mongodb.collection,
-    ));
+    let shared_state = std::sync::Arc::new(state::MongoAppState::new( client,));
 
     // build our application with a single route
     let app = Router::new()

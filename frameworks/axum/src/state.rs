@@ -1,23 +1,22 @@
 use crate::entries::TextEntry;
 
+const MONGODB_DATABASE: &str = "axum";
+const MONGODB_COLLECTION: &str = "texts";
+
 pub struct MongoAppState {
     client: mongodb::Client,
-    collection: String,
-    database: String,
 }
 
 impl MongoAppState {
-    pub fn new(client: mongodb::Client, database: String, collection: String) -> MongoAppState {
+    pub fn new(client: mongodb::Client) -> MongoAppState {
         MongoAppState {
             client,
-            database,
-            collection,
         }
     }
     pub fn client(&self) -> mongodb::Collection<TextEntry> {
         return self
             .client
-            .database(&self.database)
-            .collection::<TextEntry>(&self.collection);
+            .database(MONGODB_DATABASE)
+            .collection::<TextEntry>(MONGODB_COLLECTION);
     }
 }
