@@ -76,7 +76,7 @@ async fn main() -> std::io::Result<()> {
 
 ## {data-auto-animate=true}
 
-<pre data-id="code-animation"><code data-trim data-line-numbers="2|3|4|19-22" rust>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|2|3|4|19-22" rust>
 async fn get_text(
     State(state): State<Arc<state::MongoAppState>>,
     Path(text_id): Path<String>,
@@ -108,6 +108,12 @@ async fn get_text(
     }
 }
 </code></pre>
+
+## Pros/Cons
+
+- + lightweight
+- + no macro black magic
+- - more verbose (e.g. for state)
 
 ## Benchmark
 

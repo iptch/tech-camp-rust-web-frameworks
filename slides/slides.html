@@ -412,7 +412,7 @@ async fn main() -> std::io::Result<()> {
 </section>
 <section id="section" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers="2|3|4|19-22" rust>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|2|3|4|19-22" rust>
 async fn get_text(
     State(state): State<Arc<state::MongoAppState>>,
     Path(text_id): Path<String>,
@@ -444,6 +444,20 @@ async fn get_text(
     }
 }
 </code></pre>
+</section>
+<section id="proscons" class="slide level2">
+<h2>Pros/Cons</h2>
+<ul>
+<li><ul>
+<li>lightweight</li>
+</ul></li>
+<li><ul>
+<li>no macro black magic</li>
+</ul></li>
+<li><ul>
+<li>more verbose (e.g. for state)</li>
+</ul></li>
+</ul>
 </section>
 <section id="benchmark-1" class="slide level2">
 <h2>Benchmark</h2>
