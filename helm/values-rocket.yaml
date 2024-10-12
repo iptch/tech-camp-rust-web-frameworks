@@ -1,0 +1,14 @@
+env:
+  - name: ROCKET_DATABASES
+    value: '{texts={url="mongodb://this-does-not-exist:27017"}}'
+  - name: ROCKET_ADDRESS
+    value: "0.0.0.0"
+  - name: ROCKET_PORT
+    value: "8000"
+  - name: ROCKET_LIMITS
+    value: '{json=\"10MiB\"}'
+image:
+  repository: jklsuperuniqueregistry.azurecr.io/rocket-text-searcher
+  tag: 0.1.0
+service:
+  port: 8000
