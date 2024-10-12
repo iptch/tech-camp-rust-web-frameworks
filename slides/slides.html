@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Selim Kälin &amp; Zak Cook &amp; Jakob Beckmann">
+  <title>Crab Rave</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@5.1.0/dist/theme/moon.css" id="theme">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+    html * {
+      color-profile: sRGB;
+      rendering-intent: auto;
+    }
+
+    :root {
+      --r-main-font-size: 35px;
+      --r-main-color: #abb2bf;
+      --r-block-margin: 20px;
+      --r-heading-margin: 0 0 40px 0;
+      --r-heading-font: League Gothic, Impact, sans-serif;
+      --r-heading-line-height: 1.2;
+      --r-heading-letter-spacing: normal;
+      --r-title-text-transform: uppercase;
+      /* --r-heading-text-transform: uppercase; */
+      --r-heading-text-shadow: none;
+      --r-heading-font-weight: normal;
+      --r-heading1-text-shadow: none;
+      --r-heading1-size: 3.77em;
+      --r-heading2-size: 2.11em;
+      --r-heading3-size: 1.55em;
+      --r-heading4-size: 1em;
+      --r-code-font: monospace;
+      --r-link-color: #268bd2;
+      --r-link-color-dark: #1a6091;
+      --r-link-color-hover: #78b9e6;
+      --r-selection-background-color: #d33682;
+      --r-selection-color: #fff;
+      --r-ipt-red: #E9124B;
+      --r-ipt-blue: #1F3864;
+    }
+    .reveal {
+      font-family: "SauceCodePro Nerd Font";
+      font-weight: normal;
+    }
+    .reveal h1,
+    .reveal h2,
+    .reveal h3,
+    .reveal h4,
+    .reveal h5,
+    .reveal h6 {
+      margin: 0 0 20px 0;
+      padding-bottom: 1em;
+      color: #eee8d5;
+      font-family: "SauceCodePro Nerd Font";
+      font-weight: normal;
+      line-height: 0.9em;
+      letter-spacing: 0.02em;
+      text-shadow: none;
+      text-transform: capitalize;
+    }
+
+    .reveal h1 {
+      font-size: var(--r-heading1-size);
+      text-transform: var(--r-title-text-transform);
+    }
+
+    .reveal h2 {
+      font-size: var(--r-heading2-size);
+    }
+
+    .reveal h3 {
+      font-size: var(--r-heading3-size);
+    }
+
+    .reveal h4 {
+      font-size: var(--r-heading4-size);
+    }
+
+    .reveal h1 {
+      text-shadow: var(--r-heading1-text-shadow);
+    }
+
+    .reveal h1:last-child,
+    .reveal h2:last-child,
+    .reveal h3:last-child,
+    .reveal h4:last-child,
+    .reveal h5:last-child,
+    .reveal h6:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Ensure certain elements are never larger than the slide itself */
+    .reveal img,
+    .reveal video,
+    .reveal iframe {
+      max-width: 95%;
+      max-height: 95%;
+    }
+
+    .reveal strong,
+    .reveal b {
+      font-weight: bold;
+    }
+
+    .reveal em {
+      font-style: italic;
+    }
+
+    .reveal ol,
+    .reveal dl,
+    .reveal ul {
+      display: inline-block;
+      text-align: left;
+      margin: 0 0 0 1em;
+    }
+
+    .reveal ol {
+      list-style-type: decimal;
+    }
+
+    .reveal ul {
+      list-style-type: disc;
+    }
+
+    .reveal ul ul {
+      list-style-type: square;
+    }
+
+    .reveal ul ul ul {
+      list-style-type: circle;
+    }
+
+    .reveal ul ul,
+    .reveal ul ol,
+    .reveal ol ol,
+    .reveal ol ul {
+      display: block;
+      margin-left: 40px;
+    }
+
+    .reveal dt {
+      font-weight: bold;
+    }
+
+    .reveal dd {
+      margin-left: 40px;
+    }
+
+    .reveal blockquote {
+      display: block;
+      position: relative;
+      width: 70%;
+      margin: var(--r-block-margin) auto;
+      padding: 5px;
+      font-style: italic;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .reveal blockquote p:first-child,
+    .reveal blockquote p:last-child {
+      display: inline-block;
+    }
+
+    .reveal q {
+      font-style: italic;
+    }
+
+    .reveal pre {
+      display: block;
+      position: relative;
+      width: 90%;
+      margin: var(--r-block-margin) auto;
+      text-align: left;
+      font-size: 0.55em;
+      font-family: var(--r-code-font);
+      line-height: 1.2em;
+      word-wrap: break-word;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .reveal code {
+      background: #282c34;
+      font-family: var(--r-code-inline-font);
+      border-radius: 5px;
+      border-width: 1px;
+      border-style: solid;
+      border-color: #abb2bf;
+      text-transform: none;
+      padding: 0 3px 0 3px;
+      font-size: 90%;
+    }
+
+    .reveal pre code {
+      background: #282c34;
+      font-family: var(--r-code-font);
+      tab-size: 2;
+      font-size: 100%;
+      display: block;
+      padding: 5px;
+      overflow: auto;
+      max-height: 400px;
+      word-wrap: normal;
+    }
+
+    .reveal .code-wrapper {
+      white-space: normal;
+    }
+
+    .reveal .code-wrapper code {
+      white-space: pre;
+    }
+
+    .reveal table {
+      margin: auto;
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    .reveal table th {
+      font-weight: bold;
+    }
+
+    .reveal table th,
+    .reveal table td {
+      text-align: left;
+      padding: 0.2em 0.5em 0.2em 0.5em;
+      border-bottom: 1px solid;
+    }
+
+    .reveal table th[align=center],
+    .reveal table td[align=center] {
+      text-align: center;
+    }
+
+    .reveal table th[align=right],
+    .reveal table td[align=right] {
+      text-align: right;
+    }
+
+    .reveal table tbody tr:last-child th,
+    .reveal table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .reveal sup {
+      vertical-align: super;
+      font-size: smaller;
+    }
+
+    .reveal sub {
+      vertical-align: sub;
+      font-size: smaller;
+    }
+
+    .reveal small {
+      display: inline-block;
+      font-size: 0.6em;
+      line-height: 1.2em;
+      vertical-align: top;
+    }
+
+    .reveal small * {
+      vertical-align: top;
+    }
+
+    .reveal img {
+      margin: var(--r-block-margin) 0;
+    }
+
+    /*********************************************
+     * LINKS
+     *********************************************/
+    .reveal a {
+      color: var(--r-link-color);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .reveal a:hover {
+      color: var(--r-link-color-hover);
+      text-shadow: none;
+      border: none;
+    }
+
+    .reveal .roll span:after {
+      color: #fff;
+      background: var(--r-link-color-dark);
+    }
+
+    /*********************************************
+     * Frame helper
+     *********************************************/
+    .reveal .r-frame {
+      border: 4px solid var(--r-main-color);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .reveal a .r-frame {
+      transition: all 0.15s linear;
+    }
+
+    .reveal a:hover .r-frame {
+      border-color: var(--r-link-color);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.55);
+    }
+
+      </style>
+<link rel="stylesheet" href="./styles/atom-one-dark.min.css">
+</head>
+<body>
+  <div class="reveal">
+          <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Crab Rave</h1>
+  <p class="author">Selim Kälin &amp; Zak Cook &amp; Jakob Beckmann</p>
+  <p class="institute">Innovation Process Technology AG</p>
+  <p class="date">30.08.2024</p>
+</section>
+
+<section id="why-rust" class="title-slide slide level1">
+<h1>Why Rust?</h1>
+<aside class="notes">
+<p>Session goes from 11:00 to 12:30 (90 minutes), 14:00 to 15:00 (60
+minutes) and 15:30 to 16:25 (55 minutes).</p>
+<p>Without counting breaks, we have 205 minutes (3.5 hours).</p>
+</aside>
+</section>
+
+<section id="section" class="title-slide slide level1"
+data-background="./assets/crab-with-seatbelt.jpeg">
+<h1 data-background="./assets/crab-with-seatbelt.jpeg"></h1>
+<aside class="notes">
+<p>Talk about the invention of the seatbelt, how it was ok to die in a
+car.</p>
+<ul>
+<li>Invented in 1959 by Volvo</li>
+<li>Needed laws in the 70s to actually push adoption.</li>
+</ul>
+</aside>
+</section>
+
+<section>
+<section id="a-short-overview" class="title-slide slide level1">
+<h1>A Short Overview</h1>
+<aside class="notes">
+<p>10-15 minutes max</p>
+</aside>
+</section>
+<section id="features" class="slide level2">
+<h2>Features</h2>
+<blockquote>
+<p>Easy, expressive concurrency.</p>
+</blockquote>
+<aside class="notes">
+<ul>
+<li>performance</li>
+<li>type safety (reliability)</li>
+<li>simple concurrency</li>
+<li>expressiveness (productivity)</li>
+</ul>
+</aside>
+</section>
+<section id="primitives" class="slide level2">
+<h2>Primitives</h2>
+<ul>
+<li>Signed and unsigned integers: <code>u8</code>, <code>i64</code>,
+<code>isize</code></li>
+<li>Floating points: <code>f32</code>, <code>f64</code></li>
+<li>Unicode characters: <code>'a'</code>, <code>'∞'</code></li>
+<li>Booleans: <code>true</code>, <code>false</code></li>
+<li>Unit type: <code>()</code></li>
+</ul>
+</section>
+<section id="compound-types" class="slide level2">
+<h2>Compound Types</h2>
+<ul>
+<li>Arrays: <code>[1, 2, 3]</code>, <code>[1; 256]</code></li>
+<li>Tuples: <code>(1, true)</code>, <code>T(1, "hello")</code></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>arrays are fixed in size</li>
+<li>tuples can also be named</li>
+</ul>
+</aside>
+</section>
+<section id="functions" class="slide level2">
+<h2>Functions</h2>
+<pre ><code class="rust">fn print_hello(name: String) {
+    println!("Hello, {}!", name);
+}</code></pre>
+<aside class="notes">
+<ul>
+<li>intentionally skip over references and slices, we will come back to
+it</li>
+<li>inner is a macro
+<ul>
+<li>a code generator run before type checking</li>
+<li>more powerful than functions</li>
+<li>much more difficult to write</li>
+</ul></li>
+</ul>
+</aside>
+</section>
+<section id="control-flow" class="slide level2">
+<h2>Control Flow</h2>
+<pre ><code class="rust">if name == "selim" {
+    println!("wow");
+} else {
+    println!("Hello, {}!", name);
+}</code></pre>
+</section>
+<section id="expressions" class="slide level2">
+<h2>Expressions</h2>
+<pre ><code class="rust">let last_name = if name == "selim" {
+    // no semi-colon at the end to ensure it is
+    // treated as an expression
+    "kälin"
+} else {
+    "who cares"
+};</code></pre>
+</section></section>
+<section>
+<section id="hands-on-rustlings" class="title-slide slide level1">
+<h1>Hands-On: Rustlings</h1>
+
+</section>
+<section id="try-it-out" class="slide level2">
+<h2>Try it out!</h2>
+<ul>
+<li>Check out the README in <code>exercises</code></li>
+<li>Initialise rustlings</li>
+<li>Do exercise <code>00_intro</code></li>
+</ul>
+<aside class="notes">
+<p>5-10 minutes max</p>
+</aside>
+</section></section>
+<section>
+<section id="ownership" class="title-slide slide level1">
+<h1>Ownership</h1>
+<aside class="notes">
+<p>30 minutes</p>
+</aside>
+</section>
+<section id="immutability" class="slide level2"
+data-auto-animate="true">
+<h2 data-auto-animate="true">Immutability</h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|2,4" rust>
+fn main() {
+    let x = 5;
+    println!("The value of x is: {x}");
+    x = 6;      // will fail
+    println!("The value of x is: {x}");
+}
+</code></pre>
+</section>
+<section id="immutability-1" class="slide level2"
+data-auto-animate="true">
+<h2 data-auto-animate="true">Immutability</h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="2,4" rust>
+fn main() {
+    let mut x = 5;
+    println!("The value of x is: {x}");
+    x = 6;
+    println!("The value of x is: {x}");
+}
+</code></pre>
+<aside class="notes">
+<ul>
+<li>typing is still respected, cannot change type of variable, even with
+<code>mut</code></li>
+</ul>
+</aside>
+</section>
+<section id="everything-is-owned" class="slide level2">
+<h2>Everything is Owned</h2>
+<pre ><code class="rust" data-line-numbers="">let x = String::from("hello");
+let y = x;
+println!("{}", x); // invalid</code></pre>
+</section>
+<section id="section-1" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+  fn print_hello(name: String) {
+      println!("Hello, {}!", name);
+  }
+</code></pre>
+</section>
+<section id="section-2" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+  fn print_hello(name: String) {
+      println!("Hello, {}!", name);
+  }
+
+  fn main() {
+      let name = String::from("Jakob");
+      print_hello(name);
+      // can no longer use name
+  }
+</code></pre>
+</section>
+<section id="section-3" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+  fn print_hello(name: String) {
+      println!("Hello, {}!", name);
+  }
+
+  fn main() {
+      let name = String::from("Jakob");
+      print_hello(name.clone());
+      print_hello(name);
+  }
+</code></pre>
+</section>
+<section id="section-4" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+  fn print_hello(name: &str) {
+      println!("Hello, {}!", name);
+  }
+
+  fn main() {
+      let name = String::from("Jakob");
+      print_hello(&name);
+      print_hello(&name);
+  }
+</code></pre>
+</section>
+<section id="mutable-move" class="slide level2">
+<h2>Mutable Move</h2>
+<pre ><code class="rust" data-line-numbers="true">fn print_hello(mut name: String) {
+    name.push_str(" Beckmann");
+    println!("Hello, {}!", name);
+}</code></pre>
+</section>
+<section id="lifetimes" class="slide level2">
+<h2>Lifetimes</h2>
+<pre ><code class="rust" data-line-numbers="|2-11|4-6|8-10">fn main() {
+    let i = 3;
+    {
+        let borrow1 = &i;
+        println!("borrow1: {}", borrow1);
+    }
+    {
+        let borrow2 = &i;
+        println!("borrow2: {}", borrow2);
+    }
+}</code></pre>
+</section>
+<section id="section-5" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|4" rust>
+  struct A { x: i32 }
+
+  impl A {
+      fn borrow(&self) -> &i32 {
+          &self.x
+      }
+  }
+
+  fn main() {
+      let a = A { x: 1 };
+      println!("{}", a.borrow());
+  }
+</code></pre>
+</section>
+<section id="section-6" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="4|" rust>
+  struct A { x: i32 }
+
+  impl<'a> A {
+      fn borrow(&'a self) -> &'a i32 {
+          &self.x
+      }
+  }
+
+  fn main() {
+      let a = A { x: 1 };
+      println!("{}", a.borrow());
+  }
+</code></pre>
+<aside class="notes">
+<ul>
+<li>lifetime parameter treated as generic definition</li>
+<li>inferred with only one argument and return</li>
+<li>needed with more than one argument</li>
+</ul>
+</aside>
+</section>
+<section id="section-7" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+  struct A<'a> { x: &'a i32 }
+
+  impl<'a> A<'a> {
+      fn borrow(&'a self) -> &'a i32 {
+          self.x
+      }
+  }
+
+  fn main() {
+      let x = 2;
+      let a = A { x: &x };
+      println!("{}", a.borrow());
+  }
+</code></pre>
+</section>
+<section id="section-8" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|13-15" rust>
+  struct A<'a> { x: &'a i32 }
+
+  impl<'a> A<'a> {
+      fn borrow(&'a self) -> &'a i32 {
+          self.x
+      }
+  }
+
+  fn main() {
+      let x = 2;
+      let a = A { x: &x };
+      {
+          let y = 3;
+          a.x = &y;
+      }
+      println!("{}", a.borrow());
+  }
+</code></pre>
+</section>
+<section id="section-9" class="slide level2">
+<h2></h2>
+<pre ><code class="text">error[E0597]: `y` does not live long enough
+  --&gt; src/main.rs:14:15
+   |
+13 |         let y = 3;
+   |             - binding `y` declared here
+14 |         a.x = &y;
+   |               ^^ borrowed value does not live long enough
+15 |     }
+   |     - `y` dropped here while still borrowed
+16 |     println!("{}", a.borrow());
+   |                    - borrow later used here
+
+For more information about this error, try `rustc --explain E0597`.</code></pre>
+<aside class="notes">
+<p>Ending: let’s get back to the code …</p>
+</aside>
+</section>
+<section id="section-10" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+  struct A<'a> { x: &'a i32 }
+
+  impl<'a> A<'a> {
+      fn borrow(&'a self) -> &'a i32 {
+          self.x
+      }
+  }
+
+  fn main() {
+      let x = 2;
+      let a = A { x: &x };
+      {
+          let y = 3;
+          a.x = &y;
+      }
+      println!("{}", a.borrow());
+  }
+</code></pre>
+</section>
+<section id="section-11" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+  struct A<'a> { x: &'a i32 }
+
+  impl<'a> A<'a> {
+      fn borrow(&'a self) -> &'a i32 {
+          self.x
+      }
+  }
+
+  fn main() {
+      let x = 2;
+      let a = A { x: &x };
+      {
+          let y = 3;
+          a.x = &y;
+      }
+  }
+</code></pre>
+<aside class="notes">
+<p>Compiler is smart enough to figure out we don’t access the reference
+after the lifetime</p>
+</aside>
+</section></section>
+<section id="hands-on" class="title-slide slide level1">
+<h1>Hands-On</h1>
+<p>Rustlings:</p>
+<ul>
+<li>Immutability:
+<ul>
+<li><code>exercises/01_variables</code>, try 4 and 5</li>
+</ul></li>
+<li>Ownership:
+<ul>
+<li><code>exercises/06_move_semantics</code>, try 2 to 5</li>
+</ul></li>
+<li>Lifetimes:
+<ul>
+<li><code>exercises/16_lifetimes</code>, try 1 to 3</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<p>30 minutes</p>
+</aside>
+</section>
+
+<section>
+<section id="enums" class="title-slide slide level1">
+<h1>Enums</h1>
+
+</section>
+<section id="section-12" class="slide level2">
+<h2></h2>
+<pre ><code class="rust" data-line-numbers="true">// Simple enum 
+enum Seasons {
+    Winter,
+    Spring,
+    Summer,
+    Autumn,
+    Bulk,
+}
+
+let favorite_season = Seasons::Winter;
+let mut current_season = Seasons::Summer;</code></pre>
+<aside class="notes">
+<ul>
+<li>enums are not used to group related fields (like structs)</li>
+<li>enums give a way of saying that a value is one of a set of
+possibilities</li>
+</ul>
+</aside>
+</section>
+<section id="section-13" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+  // Enums can contain data
+  enum Contact{
+    Phone(u16, u16, u16, u16),
+    Email(String),
+  }
+
+  let ipt_phone = Contact::Phone(44, 735, 27, 69);
+  let ipt_email = Contact::Email(String::from("info@ipt.ch"));
+</code></pre>
+<aside class="notes">
+<p>useful to concisely represent data instead of including an enum
+inside a struct or similar constructor is automatically generated for
+enum containing fields can contain any kind of data, even structs or
+other enums</p>
+</aside>
+</section>
+<section id="section-14" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|10" rust>
+  // Enums can contain data
+  enum Contact{
+    Phone(u16, u16, u16, u16),
+    Email(String),
+  }
+
+  let ipt_phone = Contact::Phone(44, 735, 27, 69);
+  let ipt_email = Contact::Email(String::from("info@ipt.ch"));
+
+  ipt_phone.contact();
+</code></pre>
+</section>
+<section id="section-15" class="slide level2">
+<h2></h2>
+<pre ><code class="text">error[E0599]: no method named `contact` found for enum `Contact` in the current scope
+  --&gt; src/main.rs:13:13
+   |
+2  |   enum Contact{
+   |   ------------ method `contact` not found for this enum
+...
+13 |   ipt_phone.contact();
+   |             ^^^^^^^ method not found in `Contact`</code></pre>
+</section>
+<section id="section-16" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|7-15" rust>
+  // Enums can contain data
+  enum Contact{
+    Phone(u16, u16, u16, u16),
+    Email(String),
+  }
+
+  // Enums can implement methods
+  impl Contact{
+    fn contact(&self) {
+      match self {
+        Contact::Phone(a, b, c, d) => println!("dialling {}-{}-{}-{} ...", a, b, c, d),
+        Contact::Email(address) => println!("writing to {} ...", address),
+      }
+    }
+  }
+
+  let ipt_phone = Contact::Phone(44, 735, 27, 69);
+  let ipt_email = Contact::Email(String::from("info@ipt.ch"));
+
+  ipt_phone.contact(); 
+</code></pre>
+<aside class="notes">
+<p>methods can be defined on enums self will be the value that the
+method gets called on, e.g. self = ipt_phone = Contact::Phone(…)
+above</p>
+</aside>
+</section>
+<section id="section-17" class="slide level2">
+<h2></h2>
+<pre ><code class="text">dialling 44-735-27-69 ...</code></pre>
+</section>
+<section id="rusts-option-enum" class="slide level2">
+<h2>Rust’s <code>Option</code> Enum</h2>
+<pre ><code class="rust" data-line-numbers="true">enum Option&lt;T&gt; {
+    None,
+    Some(T),
+}
+
+let apples: Option&lt;u8&gt; = Some(4);
+let orange: Option&lt;u8&gt; = None;</code></pre>
+<aside class="notes">
+<p>value inside Some(T) must be of type defined with Option<T></p>
+</aside>
+</section>
+<section id="rusts-result-enum" class="slide level2">
+<h2>Rust’s <code>Result</code> Enum</h2>
+<pre ><code class="rust" data-line-numbers="true">enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}</code></pre>
+<aside class="notes">
+<p>Ok type T can (and usually is) differnt from Err type E Results must
+be used -&gt; compiler will warn of unused/ignored Result values both Ok
+and Err variants can be () -&gt; but does it make sense?</p>
+</aside>
+</section></section>
+<section>
+<section id="pattern-matching" class="title-slide slide level1">
+<h1>Pattern Matching</h1>
+
+</section>
+<section id="section-18" class="slide level2">
+<h2></h2>
+<pre ><code class="rust" data-line-numbers="true">fn real_season(season: Seasons) -&gt; Result&lt;Seasons, String&gt; {
+     match season {
+          Seasons::Winter =&gt; Ok(season),
+          Seasons::Spring =&gt; Ok(season),
+          Seasons::Summer =&gt; Ok(season),
+          Seasons::Autumn =&gt; Ok(season),
+          Seasons::Bulk =&gt; Err("I am not so sure about that...".to_string()),
+     }
+}</code></pre>
+</section>
+<section id="section-19" class="slide level2">
+<h2></h2>
+<pre ><code class="rust" data-line-numbers="true">  fn real_season(season: Seasons) -&gt; Result&lt;Seasons, String&gt; {
+      match season {
+          other =&gt; Ok(other),
+          Seasons::Bulk =&gt; Err("I am not so sure about that...".to_string()),
+      }
+  }</code></pre>
+</section>
+<section id="section-20" class="slide level2">
+<h2></h2>
+<pre ><code class="rust" data-line-numbers="true">  // Remember our apples and oranges
+  fn buy_more(fruit: Option&lt;u8&gt;) -&gt; bool {
+    match fruit {
+      None =&gt; true,
+      Some(x) =&gt; false,
+    }
+  }</code></pre>
+<aside class="notes">
+<p>matches are exhaustive can use wildcard catch-all pattern by defining
+a variable that will be used for all non-covered cases can use _ to do
+something with non-covered cases without reusing the value</p>
+</aside>
+</section></section>
+<section>
+<section id="error-handling" class="title-slide slide level1">
+<h1>Error Handling</h1>
+
+</section>
+<section id="to-panic-or-not-panic" class="slide level2">
+<h2>To Panic or Not Panic</h2>
+<pre ><code class="rust" data-line-numbers="true">// Unrecoverable errors use panic! macro
+if totally_broken {
+    panic!("nothing we can do about this");
+}</code></pre>
+</section>
+<section class="slide level2">
+
+<pre ><code class="rust" data-line-numbers="true">// Recoverable errors using Result
+let some_variable = function_that_could_fail();
+match some_variable {
+     Ok(result) =&gt; use_result(result),
+     Err(error) =&gt; println!("this error occurred: {error:?}"),
+}
+
+// Shortcuts for Result type
+let only_valid = function_that_could_fail().unwrap();
+let only_valid = function_that_could_fail()
+    .expect("oh no something bad happened");
+
+// Or even shorter (only if return types align)
+let only_valid = function_that_could_fail()?;</code></pre>
+<aside class="notes">
+<p>when should you panic? -&gt; there is no way back, program crashes
+when to use result type and unwrap? -&gt; calling code has option to
+deal with error gracefully</p>
+</aside>
+</section>
+<section id="match-on-different-errors" class="slide level2">
+<h2>Match on Different Errors</h2>
+<pre ><code class="rust">  use std::fs::File;
+
+  fn read_tweet(source_path: &str, buffer: &mut [u8]) -&gt; usize {
+    let tweet = File::open(source_path);
+
+    match tweet.unwrap() {
+      Ok(file) =&gt; {
+        let bytes_read = file.read(&mut buffer);
+        match bytes_read.unwrap() {
+          Ok(number_of_bytes) =&gt; number_of_bytes,
+          Err(err) =&gt; panic!("Failed to read the tweet: {err:?}"),
+        },
+      },
+      Err(err) =&gt; panic!("Failed to open the tweet: {err:?}"),
+    }
+  }</code></pre>
+<aside class="notes">
+<p>all three topics, 20 minutes unwrap_or_else() -&gt; closure that
+allows a potential error to be used for further processing</p>
+</aside>
+</section></section>
+<section id="hands-on-1" class="title-slide slide level1">
+<h1>Hands-On</h1>
+<p>Rustlings:</p>
+<ul>
+<li>Enumerations -&gt; <code>exercises/08_enums</code>, try 1 and 2</li>
+<li>Pattern Matching -&gt; <code>exercises/12_options</code>, try 2 and
+3</li>
+<li>Error Handling -&gt; <code>exercises/13_error_handling</code>, start
+with 1</li>
+</ul>
+<aside class="notes">
+<p>20 minutes</p>
+</aside>
+</section>
+
+<section>
+<section id="traits" class="title-slide slide level1">
+<h1>Traits</h1>
+
+</section>
+<section id="section-21" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+// everyone has seen interfaces
+trait Closer {
+  fn close(self) -> Result<(), &'static str>;
+}
+</code></pre>
+</section>
+<section id="section-22" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+// everyone has seen interfaces
+trait Closer {
+  fn close(self) -> Result<(), &'static str>;
+}
+
+struct File {
+    // fields...
+}
+
+impl Closer for File {
+    fn close(self) -> Result<(), &'static str> {
+        Err("not implemented")
+    }
+}
+</code></pre>
+</section>
+<section id="section-23" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+// everyone has seen interfaces
+trait Closer {
+  fn close(self) -> Result<(), &'static str>;
+}
+
+// you can implement traits for any type
+impl Closer for String {
+    fn close(mut self) -> Result<(), &'static str> {
+        self.clear();
+        Ok(())
+    }
+}
+</code></pre>
+</section>
+<section id="section-24" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+// everyone has seen interfaces
+trait Closer {
+  fn close(self) -> Result<(), &'static str>;
+}
+
+// restrict your functions to take types implementing a trait
+fn close_and_exit(c: impl Closer) {
+    let _ = c.close();
+    // exit
+}
+</code></pre>
+</section>
+<section id="section-25" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="9" rust>
+// everyone has seen interfaces
+trait Closer {
+  fn close(self) -> Result<(), &'static str>;
+}
+
+// restrict your functions to take types implementing a trait
+fn close_and_exit(c: impl Closer) {
+    let _ = c.close();
+    let _ = c.close(); // what would happen here?
+    // exit
+}
+</code></pre>
+</section>
+<section id="section-26" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+trait Closer {
+  // self is moved
+  fn close(self) -> Result<(), &'static str>;
+}
+
+trait TextStream {
+  // mutable borrow of self
+  fn read(&mut self) -> String;
+  // immutable borrow of self
+  fn at_end(&self) -> bool;
+}
+
+fn read_until_end(mut io: impl Closer + TextStream) {
+    while !io.at_end() {
+        let _ = io.read();
+    }
+    io.close();
+}
+</code></pre>
+</section>
+<section id="built-in-traits" class="slide level2">
+<h2>Built-in traits</h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+use std::fmt::Debug;
+
+struct Point {
+    x: u32,
+    y: u32
+}
+
+impl Debug for Point {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "x: {:?}, y: {:?}", self.x, self.y)
+    }
+}
+
+fn main() {
+    let origin = Point{x: 0, y: 0};
+    println!("the origin is at {:?}", &origin);
+}
+</code></pre>
+</section></section>
+<section>
+<section id="macros" class="title-slide slide level1">
+<h1>Macros</h1>
+
+</section>
+<section id="section-27" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+// define a new macro with "macro_rules!"
+macro_rules! say_hello {
+    // the macro takes no argument
+    () => {
+        // the macro will expand into the contents of this block
+        println!("Hello!")
+    };
+}
+
+fn main() {
+    // This call will expand into `println!("Hello!")`
+    say_hello!();
+}
+</code></pre>
+</section>
+<section id="section-28" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+// define a new macro with "macro_rules!"
+macro_rules! say_hello {
+    // the macro takes no argument
+    () => {
+        // the macro will expand into the contents of this block
+        println!("Hello!")
+    };
+    ($expression:expr) => {
+        println!("Hello, {}!", $expression)
+    };
+}
+
+fn main() {
+    // This call will expand into `println!("Hello!")`
+    say_hello!();
+    // This call will expand into `println!("Hello, {}!", "world")`
+    say_hello!("world");
+}
+</code></pre>
+</section>
+<section id="the-vec-macro" class="slide level2">
+<h2>the <code>vec!</code> macro</h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+macro_rules! vec {
+    () => { ... };
+    ($elem:expr; $n:expr) => { ... };
+    // variadic argument support (dunno wtf this is)
+    ($($x:expr),+ $(,)?) => { ... };
+}
+</code></pre>
+</section>
+<section id="derive-macros" class="slide level2">
+<h2><code>derive</code> macros</h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers rust>
+se std::fmt::Debug;
+
+#[derive(Debug)]
+struct Point {
+    x: u32,
+    y: u32
+}
+
+fn main() {
+    let origin = Point{x: 0, y: 0};
+    println!("the origin is at {:?}", &origin);
+}
+</code></pre>
+<aside class="notes">
+<p>20 minutes</p>
+</aside>
+</section></section>
+<section id="hands-on-2" class="title-slide slide level1">
+<h1>Hands-On</h1>
+<ul>
+<li><code>exercises/15_traits/</code> 1, 2, 4, 5</li>
+<li><code>exercises/21_macros/</code> 1, 2, 4</li>
+</ul>
+<aside class="notes">
+<p>20 minutes</p>
+</aside>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@5.1.0/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+  <script src="https://unpkg.com/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@5.1.0/plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@5.1.0/plugin/zoom/zoom.js"></script>
+  <script src="https://unpkg.com/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: false,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // reveal.js plugins
+        plugins: [
+          RevealHighlight,
+          RevealNotes,
+          RevealMarkdown,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>

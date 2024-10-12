@@ -1,0 +1,3 @@
+#!/bin/bash
+cd ./hello/
+cargo run

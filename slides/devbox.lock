@@ -1,0 +1,201 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "just@1.34.0": {
+      "last_modified": "2024-08-05T22:10:44Z",
+      "resolved": "github:NixOS/nixpkgs/d3f42bd62aa840084563e3b93e4eab73cb0a0448#just",
+      "source": "devbox-search",
+      "version": "1.34.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/bhmphvmb8054gl6v36micjgzjy8nl2yz-just-1.34.0",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/3dchibzgppf5s7m4zw7p925h8c4qmknh-just-1.34.0-man",
+              "default": true
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/7hfr3mzqsfmdrlilda7wn5ps7lqfpfbg-just-1.34.0-doc"
+            }
+          ],
+          "store_path": "/nix/store/bhmphvmb8054gl6v36micjgzjy8nl2yz-just-1.34.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/8b62mnp3qnhr78x7isrs94n6rgbpllz3-just-1.34.0",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/ybyl3x4rw7qzmn034vwihpy0m7169bq8-just-1.34.0-man",
+              "default": true
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/q738imaq7j4f6a4s6g1gpirxns05qbam-just-1.34.0-doc"
+            }
+          ],
+          "store_path": "/nix/store/8b62mnp3qnhr78x7isrs94n6rgbpllz3-just-1.34.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/a3mmfpf9bjn2bp6r5i8lw11pnj8q9q61-just-1.34.0",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/yrlrpmq73jicx42i79dc8vzdx720nqa6-just-1.34.0-man",
+              "default": true
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/rql3zwc9jqfrj7fzrbyxph9jnr1pn319-just-1.34.0-doc"
+            }
+          ],
+          "store_path": "/nix/store/a3mmfpf9bjn2bp6r5i8lw11pnj8q9q61-just-1.34.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/kmcl4c1cdl1m7hwmwcgl003lmwsy249v-just-1.34.0",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/y07wb635xc19g1ph33hzpizdvxr5n651-just-1.34.0-man",
+              "default": true
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/lkr9fa8sn3fxjpd78iml8rxf26x7pgk5-just-1.34.0-doc"
+            }
+          ],
+          "store_path": "/nix/store/kmcl4c1cdl1m7hwmwcgl003lmwsy249v-just-1.34.0"
+        }
+      }
+    },
+    "pandoc-imagine@0.1.6": {
+      "last_modified": "2024-07-31T08:48:38Z",
+      "resolved": "github:NixOS/nixpkgs/c3392ad349a5227f4a3464dce87bcc5046692fce#pandoc-imagine",
+      "source": "devbox-search",
+      "version": "0.1.6",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/v9xl5q8n741xqnl0kjknylwlwlwl5w6z-pandoc-imagine-0.1.6",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/zpajidym3pla9q6m6yzci9g0a943wcdg-pandoc-imagine-0.1.6-dist"
+            }
+          ],
+          "store_path": "/nix/store/v9xl5q8n741xqnl0kjknylwlwlwl5w6z-pandoc-imagine-0.1.6"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/d4yhzw67iv4gc1d8f1s57mn9rn6lsppk-pandoc-imagine-0.1.6",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/gs2k2fajvdd7gwpwqvkd18dh3nahzp30-pandoc-imagine-0.1.6-dist"
+            }
+          ],
+          "store_path": "/nix/store/d4yhzw67iv4gc1d8f1s57mn9rn6lsppk-pandoc-imagine-0.1.6"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/a5bfa1vfihlzb6ri6piy5rbyl9ficvd6-pandoc-imagine-0.1.6",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/cd3yxkalvw010kycqkn9xp281rp5ighd-pandoc-imagine-0.1.6-dist"
+            }
+          ],
+          "store_path": "/nix/store/a5bfa1vfihlzb6ri6piy5rbyl9ficvd6-pandoc-imagine-0.1.6"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/x621nhbn6m9ga6wzk7b0aavqbnjy7g6y-pandoc-imagine-0.1.6",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/a2xkswk932pf2wfsm0jwrqhihr8k574v-pandoc-imagine-0.1.6-dist"
+            }
+          ],
+          "store_path": "/nix/store/x621nhbn6m9ga6wzk7b0aavqbnjy7g6y-pandoc-imagine-0.1.6"
+        }
+      }
+    },
+    "pandoc@3.1.11.1": {
+      "last_modified": "2024-08-01T02:09:53Z",
+      "resolved": "github:NixOS/nixpkgs/799bc8d7b16e6779f0105713e6794899133c4a38#pandoc",
+      "source": "devbox-search",
+      "version": "3.1.11.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/mwyx2bsf2a7189pwjv2r7rzmakzifnl6-pandoc-cli-3.1.11.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/mwyx2bsf2a7189pwjv2r7rzmakzifnl6-pandoc-cli-3.1.11.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/7jqrmyl90z1w3kn4h2r4hnj4gbh2g0a7-pandoc-cli-3.1.11.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/7jqrmyl90z1w3kn4h2r4hnj4gbh2g0a7-pandoc-cli-3.1.11.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/1cqqs85xjji179w6zjmg7cxm728s9sxm-pandoc-cli-3.1.11.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/1cqqs85xjji179w6zjmg7cxm728s9sxm-pandoc-cli-3.1.11.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ddmxa2fvnr5vh0psws0yfbvgb6afdb1l-pandoc-cli-3.1.11.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/ddmxa2fvnr5vh0psws0yfbvgb6afdb1l-pandoc-cli-3.1.11.1"
+        }
+      }
+    }
+  }
+}

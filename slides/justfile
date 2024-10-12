@@ -1,0 +1,22 @@
+#!/usr/bin/env just --justfile
+
+alias b := build
+alias p := present
+alias c := clean
+
+build:
+  pandoc -s \
+    -t revealjs \
+    --slide-level 2 \
+    -F pandoc-imagine \
+    -L filters/code-include.lua \
+    -L filters/revealjs-codeblocks.lua \
+    --template template.html \
+    -o slides.html \
+    slides.md
+
+clean:
+  rm ./pd-images/*
+
+present:
+  xdg-open slides.html

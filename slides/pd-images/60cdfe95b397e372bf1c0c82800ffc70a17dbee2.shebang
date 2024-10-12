@@ -1,0 +1,4 @@
+#!/bin/bash
+cd ./hello/
+cargo build --release
+file ./target/release/hello
