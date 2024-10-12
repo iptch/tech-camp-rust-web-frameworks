@@ -5,9 +5,8 @@ use axum::routing::get;
 use axum::Json;
 use axum::{http::StatusCode, routing::post, Router};
 use entries::TextSearchEntry;
+use std::fs;
 use std::sync::Arc;
-use tokio::fs;
-use tokio::io;
 
 mod config;
 mod entries;
@@ -15,9 +14,9 @@ mod payloads;
 mod state;
 
 #[tokio::main]
-async fn main() -> io::Result<()> {
-    let config_text = fs::read_to_string("config.toml").await?;
-    let config: config::Config = toml::from_str(&config_text).unwrap();
+async fn main() -> anyhow::Result<()> {
+    let config_text = fs::read_to_string("config.toml")?;
+    let config: config::Config = toml::from_str(&config_text)?;
     println!("{:?}", config);
 
     let client = mongodb::Client::with_uri_str(config.mongodb.host)

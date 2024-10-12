@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+anyhow = "1.0.89"
 axum = "0.7.7"
 bson = "2.13.0"
 mongodb = "3.1.0"
