@@ -1,0 +1,8 @@
+env:
+  - name: MONGODB_URI
+    value: "mongodb://mongodb:27017"
+image:
+  repository: jklsuperuniqueregistry.azurecr.io/tests/actix
+  tag: latest
+service:
+  port: 8080
