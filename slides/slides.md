@@ -25,41 +25,72 @@ highlightjs: true
 
 # Rocket
 
-## Ergonomics / Hands-On Feel
+## Ergonomics {data-auto-animate=true}
 
-## Benchmark
+<pre data-id="code-animation"><code data-trim data-line-numbers="|1,5" rust>
+#[macro_use]
+extern crate rocket;
+use rocket_db_pools::Database;
 
-## Control Flow
-
-```rust
-if name == "selim" {
-    println!("wow");
-} else {
-    println!("Hello, {}!", name);
-}
-```
-
-## Expressions
-```rust
-let last_name = if name == "selim" {
-    // no semi-colon at the end to ensure it is
-    // treated as an expression
-    "kälin"
-} else {
-    "who cares"
-};
-```
-
-## Immutability {data-auto-animate=true}
-
-<pre data-id="code-animation"><code data-trim data-line-numbers="|2,4" rust>
-fn main() {
-    let x = 5;
-    println!("The value of x is: {x}");
-    x = 6;      // will fail
-    println!("The value of x is: {x}");
+#[launch]
+fn rocket() -> _ {
+    rocket::build()
+        .attach(MyDatabase::init())
 }
 </code></pre>
+
+## {data-auto-animate=true}
+
+<pre data-id="code-animation"><code data-trim data-line-numbers="|5-7,12" rust>
+#[macro_use]
+extern crate rocket;
+use rocket_db_pools::Database;
+
+#[derive(Database)]
+#[database("my-database-name")]
+pub struct MyDatabase(mongodb::Client);
+
+#[launch]
+fn rocket() -> _ {
+    rocket::build()
+        .attach(MyDatabase::init())
+}
+</code></pre>
+
+## {data-auto-animate=true}
+
+<pre data-id="code-animation"><code data-trim data-line-numbers="|9|9-21|27" rust><script type="text/template">
+#[macro_use]
+extern crate rocket;
+use rocket_db_pools::Database;
+
+#[derive(Database)]
+#[database("my-database-name")]
+pub struct MyDatabase(mongodb::Client);
+
+#[get("/texts/<uuid>")]
+pub async fn get(db: Connection<MyDatabase>, uuid: Uuid) -> (Status, Value) {
+    match get_from_database(db, uuid).await {
+        Err(e) => (
+            Status::InternalServerError,
+            json!({"error": format!("error searching database: {e}")}),
+        ),
+        Ok(result) => (
+            Status::Ok, 
+            json!({"data": text.text.to_owned()}),
+        ),
+    },
+}
+
+#[launch]
+fn rocket() -> _ {
+    rocket::build()
+        .attach(MyDatabase::init())
+        .mount("/", routes![get])
+}
+</script></code></pre>
+
+## Benchmark
 
 ## Immutability {data-auto-animate=true}
 

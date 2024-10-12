@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
-  <meta name="author" content="Selim Kälin &amp; Zak Cook &amp; Jakob Beckmann">
-  <title>Crab Rave</title>
+  <meta name="author" content="Selim Kälin &amp; Zak Cook &amp; Jan Kleine">
+  <title>TechCamp 2024/10 Rust Web Frameworks</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -334,151 +334,108 @@
           <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Crab Rave</h1>
-  <p class="author">Selim Kälin &amp; Zak Cook &amp; Jakob Beckmann</p>
+  <h1 class="title">TechCamp 2024/10 Rust Web Frameworks</h1>
+  <p class="author">Selim Kälin &amp; Zak Cook &amp; Jan Kleine</p>
   <p class="institute">Innovation Process Technology AG</p>
-  <p class="date">30.08.2024</p>
-</section>
-
-<section id="why-rust" class="title-slide slide level1">
-<h1>Why Rust?</h1>
-<aside class="notes">
-<p>Session goes from 11:00 to 12:30 (90 minutes), 14:00 to 15:00 (60
-minutes) and 15:30 to 16:25 (55 minutes).</p>
-<p>Without counting breaks, we have 205 minutes (3.5 hours).</p>
-</aside>
-</section>
-
-<section id="section" class="title-slide slide level1"
-data-background="./assets/crab-with-seatbelt.jpeg">
-<h1 data-background="./assets/crab-with-seatbelt.jpeg"></h1>
-<aside class="notes">
-<p>Talk about the invention of the seatbelt, how it was ok to die in a
-car.</p>
-<ul>
-<li>Invented in 1959 by Volvo</li>
-<li>Needed laws in the 70s to actually push adoption.</li>
-</ul>
-</aside>
+  <p class="date">12.10.2024</p>
 </section>
 
 <section>
-<section id="a-short-overview" class="title-slide slide level1">
-<h1>A Short Overview</h1>
-<aside class="notes">
-<p>10-15 minutes max</p>
-</aside>
+<section id="actix" class="title-slide slide level1">
+<h1>Actix</h1>
+
 </section>
-<section id="features" class="slide level2">
-<h2>Features</h2>
-<blockquote>
-<p>Easy, expressive concurrency.</p>
-</blockquote>
-<aside class="notes">
-<ul>
-<li>performance</li>
-<li>type safety (reliability)</li>
-<li>simple concurrency</li>
-<li>expressiveness (productivity)</li>
-</ul>
-</aside>
+<section id="ergonomics-hands-on-feel" class="slide level2">
+<h2>Ergonomics / Hands-On Feel</h2>
 </section>
-<section id="primitives" class="slide level2">
-<h2>Primitives</h2>
-<ul>
-<li>Signed and unsigned integers: <code>u8</code>, <code>i64</code>,
-<code>isize</code></li>
-<li>Floating points: <code>f32</code>, <code>f64</code></li>
-<li>Unicode characters: <code>'a'</code>, <code>'∞'</code></li>
-<li>Booleans: <code>true</code>, <code>false</code></li>
-<li>Unit type: <code>()</code></li>
-</ul>
-</section>
-<section id="compound-types" class="slide level2">
-<h2>Compound Types</h2>
-<ul>
-<li>Arrays: <code>[1, 2, 3]</code>, <code>[1; 256]</code></li>
-<li>Tuples: <code>(1, true)</code>, <code>T(1, "hello")</code></li>
-</ul>
-<aside class="notes">
-<ul>
-<li>arrays are fixed in size</li>
-<li>tuples can also be named</li>
-</ul>
-</aside>
-</section>
-<section id="functions" class="slide level2">
-<h2>Functions</h2>
-<pre ><code class="rust">fn print_hello(name: String) {
-    println!("Hello, {}!", name);
-}</code></pre>
-<aside class="notes">
-<ul>
-<li>intentionally skip over references and slices, we will come back to
-it</li>
-<li>inner is a macro
-<ul>
-<li>a code generator run before type checking</li>
-<li>more powerful than functions</li>
-<li>much more difficult to write</li>
-</ul></li>
-</ul>
-</aside>
-</section>
-<section id="control-flow" class="slide level2">
-<h2>Control Flow</h2>
-<pre ><code class="rust">if name == "selim" {
-    println!("wow");
-} else {
-    println!("Hello, {}!", name);
-}</code></pre>
-</section>
-<section id="expressions" class="slide level2">
-<h2>Expressions</h2>
-<pre ><code class="rust">let last_name = if name == "selim" {
-    // no semi-colon at the end to ensure it is
-    // treated as an expression
-    "kälin"
-} else {
-    "who cares"
-};</code></pre>
+<section id="benchmark" class="slide level2">
+<h2>Benchmark</h2>
 </section></section>
 <section>
-<section id="hands-on-rustlings" class="title-slide slide level1">
-<h1>Hands-On: Rustlings</h1>
+<section id="axium" class="title-slide slide level1">
+<h1>Axium</h1>
 
 </section>
-<section id="try-it-out" class="slide level2">
-<h2>Try it out!</h2>
-<ul>
-<li>Check out the README in <code>exercises</code></li>
-<li>Initialise rustlings</li>
-<li>Do exercise <code>00_intro</code></li>
-</ul>
-<aside class="notes">
-<p>5-10 minutes max</p>
-</aside>
+<section id="ergonomics-hands-on-feel-1" class="slide level2">
+<h2>Ergonomics / Hands-On Feel</h2>
+</section>
+<section id="benchmark-1" class="slide level2">
+<h2>Benchmark</h2>
 </section></section>
 <section>
-<section id="ownership" class="title-slide slide level1">
-<h1>Ownership</h1>
-<aside class="notes">
-<p>30 minutes</p>
-</aside>
+<section id="rocket" class="title-slide slide level1">
+<h1>Rocket</h1>
+
 </section>
-<section id="immutability" class="slide level2"
-data-auto-animate="true">
-<h2 data-auto-animate="true">Immutability</h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers="|2,4" rust>
-fn main() {
-    let x = 5;
-    println!("The value of x is: {x}");
-    x = 6;      // will fail
-    println!("The value of x is: {x}");
+<section id="ergonomics" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true">Ergonomics</h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|1,5" rust>
+#[macro_use]
+extern crate rocket;
+use rocket_db_pools::Database;
+
+#[launch]
+fn rocket() -> _ {
+    rocket::build()
+        .attach(MyDatabase::init())
 }
 </code></pre>
 </section>
-<section id="immutability-1" class="slide level2"
+<section id="section" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|5-7,12" rust>
+#[macro_use]
+extern crate rocket;
+use rocket_db_pools::Database;
+
+#[derive(Database)]
+#[database("my-database-name")]
+pub struct MyDatabase(mongodb::Client);
+
+#[launch]
+fn rocket() -> _ {
+    rocket::build()
+        .attach(MyDatabase::init())
+}
+</code></pre>
+</section>
+<section id="section-1" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|8|8-23|29" rust><script type="text/template">
+#[macro_use]
+extern crate rocket;
+use rocket_db_pools::Database;
+
+#[derive(Database)]
+#[database("my-database-name")]
+pub struct MyDatabase(mongodb::Client);
+
+#[get("/texts/<uuid>")]
+pub async fn get(db: Connection<MyDatabase>, uuid: Uuid) -> (Status, Value) {
+    match get_from_database(db, uuid).await {
+        Err(e) => (
+            Status::InternalServerError,
+            json!({"error": format!("error searching database: {e}")}),
+        ),
+        Ok(result) => (
+            Status::Ok, 
+            json!({"data": text.text.to_owned()}),
+        ),
+    },
+}
+
+#[launch]
+fn rocket() -> _ {
+    rocket::build()
+        .attach(MyDatabase::init())
+        .mount("/", routes![post, get, delete])
+}
+</script></code></pre>
+</section>
+<section id="benchmark-2" class="slide level2">
+<h2>Benchmark</h2>
+</section>
+<section id="immutability" class="slide level2"
 data-auto-animate="true">
 <h2 data-auto-animate="true">Immutability</h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers="2,4" rust>
@@ -502,7 +459,7 @@ fn main() {
 let y = x;
 println!("{}", x); // invalid</code></pre>
 </section>
-<section id="section-1" class="slide level2" data-auto-animate="true">
+<section id="section-2" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
   fn print_hello(name: String) {
@@ -510,7 +467,7 @@ println!("{}", x); // invalid</code></pre>
   }
 </code></pre>
 </section>
-<section id="section-2" class="slide level2" data-auto-animate="true">
+<section id="section-3" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
   fn print_hello(name: String) {
@@ -524,7 +481,7 @@ println!("{}", x); // invalid</code></pre>
   }
 </code></pre>
 </section>
-<section id="section-3" class="slide level2" data-auto-animate="true">
+<section id="section-4" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
   fn print_hello(name: String) {
@@ -538,7 +495,7 @@ println!("{}", x); // invalid</code></pre>
   }
 </code></pre>
 </section>
-<section id="section-4" class="slide level2" data-auto-animate="true">
+<section id="section-5" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
   fn print_hello(name: &str) {
@@ -573,7 +530,7 @@ println!("{}", x); // invalid</code></pre>
     }
 }</code></pre>
 </section>
-<section id="section-5" class="slide level2" data-auto-animate="true">
+<section id="section-6" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers="|4" rust>
   struct A { x: i32 }
@@ -590,7 +547,7 @@ println!("{}", x); // invalid</code></pre>
   }
 </code></pre>
 </section>
-<section id="section-6" class="slide level2" data-auto-animate="true">
+<section id="section-7" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers="4|" rust>
   struct A { x: i32 }
@@ -614,7 +571,7 @@ println!("{}", x); // invalid</code></pre>
 </ul>
 </aside>
 </section>
-<section id="section-7" class="slide level2" data-auto-animate="true">
+<section id="section-8" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
   struct A<'a> { x: &'a i32 }
@@ -632,7 +589,7 @@ println!("{}", x); // invalid</code></pre>
   }
 </code></pre>
 </section>
-<section id="section-8" class="slide level2" data-auto-animate="true">
+<section id="section-9" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers="|13-15" rust>
   struct A<'a> { x: &'a i32 }
@@ -654,7 +611,7 @@ println!("{}", x); // invalid</code></pre>
   }
 </code></pre>
 </section>
-<section id="section-9" class="slide level2">
+<section id="section-10" class="slide level2">
 <h2></h2>
 <pre ><code class="text">error[E0597]: `y` does not live long enough
   --&gt; src/main.rs:14:15
@@ -673,7 +630,7 @@ For more information about this error, try `rustc --explain E0597`.</code></pre>
 <p>Ending: let’s get back to the code …</p>
 </aside>
 </section>
-<section id="section-10" class="slide level2" data-auto-animate="true">
+<section id="section-11" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
   struct A<'a> { x: &'a i32 }
@@ -695,7 +652,7 @@ For more information about this error, try `rustc --explain E0597`.</code></pre>
   }
 </code></pre>
 </section>
-<section id="section-11" class="slide level2" data-auto-animate="true">
+<section id="section-12" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
   struct A<'a> { x: &'a i32 }
@@ -747,7 +704,7 @@ after the lifetime</p>
 <h1>Enums</h1>
 
 </section>
-<section id="section-12" class="slide level2">
+<section id="section-13" class="slide level2">
 <h2></h2>
 <pre ><code class="rust" data-line-numbers="true">// Simple enum 
 enum Seasons {
@@ -768,7 +725,7 @@ possibilities</li>
 </ul>
 </aside>
 </section>
-<section id="section-13" class="slide level2" data-auto-animate="true">
+<section id="section-14" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
   // Enums can contain data
@@ -787,7 +744,7 @@ enum containing fields can contain any kind of data, even structs or
 other enums</p>
 </aside>
 </section>
-<section id="section-14" class="slide level2" data-auto-animate="true">
+<section id="section-15" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers="|10" rust>
   // Enums can contain data
@@ -802,7 +759,7 @@ other enums</p>
   ipt_phone.contact();
 </code></pre>
 </section>
-<section id="section-15" class="slide level2">
+<section id="section-16" class="slide level2">
 <h2></h2>
 <pre ><code class="text">error[E0599]: no method named `contact` found for enum `Contact` in the current scope
   --&gt; src/main.rs:13:13
@@ -813,7 +770,7 @@ other enums</p>
 13 |   ipt_phone.contact();
    |             ^^^^^^^ method not found in `Contact`</code></pre>
 </section>
-<section id="section-16" class="slide level2" data-auto-animate="true">
+<section id="section-17" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers="|7-15" rust>
   // Enums can contain data
@@ -843,7 +800,7 @@ method gets called on, e.g. self = ipt_phone = Contact::Phone(…)
 above</p>
 </aside>
 </section>
-<section id="section-17" class="slide level2">
+<section id="section-18" class="slide level2">
 <h2></h2>
 <pre ><code class="text">dialling 44-735-27-69 ...</code></pre>
 </section>
@@ -877,7 +834,7 @@ and Err variants can be () -&gt; but does it make sense?</p>
 <h1>Pattern Matching</h1>
 
 </section>
-<section id="section-18" class="slide level2">
+<section id="section-19" class="slide level2">
 <h2></h2>
 <pre ><code class="rust" data-line-numbers="true">fn real_season(season: Seasons) -&gt; Result&lt;Seasons, String&gt; {
      match season {
@@ -889,7 +846,7 @@ and Err variants can be () -&gt; but does it make sense?</p>
      }
 }</code></pre>
 </section>
-<section id="section-19" class="slide level2">
+<section id="section-20" class="slide level2">
 <h2></h2>
 <pre ><code class="rust" data-line-numbers="true">  fn real_season(season: Seasons) -&gt; Result&lt;Seasons, String&gt; {
       match season {
@@ -898,7 +855,7 @@ and Err variants can be () -&gt; but does it make sense?</p>
       }
   }</code></pre>
 </section>
-<section id="section-20" class="slide level2">
+<section id="section-21" class="slide level2">
 <h2></h2>
 <pre ><code class="rust" data-line-numbers="true">  // Remember our apples and oranges
   fn buy_more(fruit: Option&lt;u8&gt;) -&gt; bool {
@@ -954,10 +911,10 @@ deal with error gracefully</p>
   fn read_tweet(source_path: &str, buffer: &mut [u8]) -&gt; usize {
     let tweet = File::open(source_path);
 
-    match tweet.unwrap() {
+    match tweet {
       Ok(file) =&gt; {
         let bytes_read = file.read(&mut buffer);
-        match bytes_read.unwrap() {
+        match bytes_read {
           Ok(number_of_bytes) =&gt; number_of_bytes,
           Err(err) =&gt; panic!("Failed to read the tweet: {err:?}"),
         },
@@ -990,7 +947,7 @@ with 1</li>
 <h1>Traits</h1>
 
 </section>
-<section id="section-21" class="slide level2" data-auto-animate="true">
+<section id="section-22" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
 // everyone has seen interfaces
@@ -999,7 +956,7 @@ trait Closer {
 }
 </code></pre>
 </section>
-<section id="section-22" class="slide level2" data-auto-animate="true">
+<section id="section-23" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
 // everyone has seen interfaces
@@ -1018,7 +975,7 @@ impl Closer for File {
 }
 </code></pre>
 </section>
-<section id="section-23" class="slide level2" data-auto-animate="true">
+<section id="section-24" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
 // everyone has seen interfaces
@@ -1035,7 +992,7 @@ impl Closer for String {
 }
 </code></pre>
 </section>
-<section id="section-24" class="slide level2" data-auto-animate="true">
+<section id="section-25" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
 // everyone has seen interfaces
@@ -1050,7 +1007,7 @@ fn close_and_exit(c: impl Closer) {
 }
 </code></pre>
 </section>
-<section id="section-25" class="slide level2" data-auto-animate="true">
+<section id="section-26" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers="9" rust>
 // everyone has seen interfaces
@@ -1066,7 +1023,7 @@ fn close_and_exit(c: impl Closer) {
 }
 </code></pre>
 </section>
-<section id="section-26" class="slide level2" data-auto-animate="true">
+<section id="section-27" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
 trait Closer {
@@ -1116,7 +1073,7 @@ fn main() {
 <h1>Macros</h1>
 
 </section>
-<section id="section-27" class="slide level2" data-auto-animate="true">
+<section id="section-28" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
 // define a new macro with "macro_rules!"
@@ -1134,7 +1091,7 @@ fn main() {
 }
 </code></pre>
 </section>
-<section id="section-28" class="slide level2" data-auto-animate="true">
+<section id="section-29" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
 // define a new macro with "macro_rules!"
@@ -1171,7 +1128,7 @@ macro_rules! vec {
 <section id="derive-macros" class="slide level2">
 <h2><code>derive</code> macros</h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers rust>
-se std::fmt::Debug;
+use std::fmt::Debug;
 
 #[derive(Debug)]
 struct Point {
