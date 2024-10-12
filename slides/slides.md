@@ -17,7 +17,7 @@ highlightjs: true
 
 ## Benchmark
 
-# Axium
+# Axum
 
 ## Ergonomics / Hands-On Feel
 
@@ -27,15 +27,13 @@ highlightjs: true
 
 ## Ergonomics {data-auto-animate=true}
 
-<pre data-id="code-animation"><code data-trim data-line-numbers="|1,5" rust>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|1,4" rust>
 #[macro_use]
 extern crate rocket;
-use rocket_db_pools::Database;
 
 #[launch]
 fn rocket() -> _ {
     rocket::build()
-        .attach(MyDatabase::init())
 }
 </code></pre>
 
@@ -44,7 +42,7 @@ fn rocket() -> _ {
 <pre data-id="code-animation"><code data-trim data-line-numbers="|5-7,12" rust>
 #[macro_use]
 extern crate rocket;
-use rocket_db_pools::Database;
+use rocket_db_pools::{Database, mongodb};
 
 #[derive(Database)]
 #[database("my-database-name")]
@@ -59,10 +57,13 @@ fn rocket() -> _ {
 
 ## {data-auto-animate=true}
 
-<pre data-id="code-animation"><code data-trim data-line-numbers="|9|9-21|27" rust><script type="text/template">
+<pre data-id="code-animation"><code data-trim data-line-numbers="|12|12-24|30|2-6" rust><script type="text/template">
 #[macro_use]
 extern crate rocket;
-use rocket_db_pools::Database;
+use rocket_db_pools::{Database, Connection, mongodb};
+use rocket::serde::uuid::Uuid;
+use rocket::http::Status;
+use rocket::serde::json::{json, Value};
 
 #[derive(Database)]
 #[database("my-database-name")]
@@ -91,6 +92,8 @@ fn rocket() -> _ {
 </script></code></pre>
 
 ## Benchmark
+
+Will update this when available ...
 
 ## Immutability {data-auto-animate=true}
 

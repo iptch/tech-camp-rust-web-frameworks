@@ -369,15 +369,13 @@
 </section>
 <section id="ergonomics" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true">Ergonomics</h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers="|1,5" rust>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|1,4" rust>
 #[macro_use]
 extern crate rocket;
-use rocket_db_pools::Database;
 
 #[launch]
 fn rocket() -> _ {
     rocket::build()
-        .attach(MyDatabase::init())
 }
 </code></pre>
 </section>
@@ -386,7 +384,7 @@ fn rocket() -> _ {
 <pre data-id="code-animation"><code data-trim data-line-numbers="|5-7,12" rust>
 #[macro_use]
 extern crate rocket;
-use rocket_db_pools::Database;
+use rocket_db_pools::{Database, mongodb};
 
 #[derive(Database)]
 #[database("my-database-name")]
@@ -401,10 +399,13 @@ fn rocket() -> _ {
 </section>
 <section id="section-1" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers="|8|8-23|29" rust><script type="text/template">
+<pre data-id="code-animation"><code data-trim data-line-numbers="|12|12-24|30|2-6" rust><script type="text/template">
 #[macro_use]
 extern crate rocket;
-use rocket_db_pools::Database;
+use rocket_db_pools::{Database, Connection, mongodb};
+use rocket::serde::uuid::Uuid;
+use rocket::http::Status;
+use rocket::serde::json::{json, Value};
 
 #[derive(Database)]
 #[database("my-database-name")]
@@ -428,7 +429,7 @@ pub async fn get(db: Connection<MyDatabase>, uuid: Uuid) -> (Status, Value) {
 fn rocket() -> _ {
     rocket::build()
         .attach(MyDatabase::init())
-        .mount("/", routes![post, get, delete])
+        .mount("/", routes![get])
 }
 </script></code></pre>
 </section>
