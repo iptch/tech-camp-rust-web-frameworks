@@ -347,6 +347,45 @@
 </section>
 <section id="ergonomics-hands-on-feel" class="slide level2">
 <h2>Ergonomics / Hands-On Feel</h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="" rust>
+#[derive(Debug, Deserialize, Serialize)]
+struct ErrorResponse {
+    error: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+struct Query {
+    term: String,
+}
+
+#[get("/texts/{uuid}/search")]
+async fn my_endpoint(
+    client: web::Data<Client>,
+    uuid: web::Path<Uuid>,
+    term: web::Query<Query>,
+) -> impl Responder {
+
+    // .. do something
+
+    HttpResponse::Ok().json(response)
+}
+
+#[actix_web::main] // or #[tokio::main]
+async fn main() -> std::io::Result<()> {
+    let uri = env::var("MONGODB_URI").unwrap_or_else(|_| "mongodb://localhost:27017".into());
+    let client = Client::with_uri_str(uri).await.expect("failed to connect");
+
+    HttpServer::new(move || {
+        App::new()
+            .wrap(Logger::default())
+            .app_data(web::Data::new(client.clone()))
+            .service(my_endpoint)
+    })
+    .bind(("0.0.0.0", 8080))?
+    .run()
+    .await
+}
+</code></pre>
 </section>
 <section id="benchmark" class="slide level2">
 <h2>Benchmark</h2>
@@ -466,7 +505,7 @@ pub async fn get(db: Connection<MyDatabase>, uuid: Uuid) -> (Status, Value) {
             json!({"error": format!("error searching database: {e}")}),
         ),
         Ok(result) => (
-            Status::Ok, 
+            Status::Ok,
             json!({"data": text.text.to_owned()}),
         ),
     },

@@ -15,7 +15,7 @@ highlightjs: true
 
 ## Ergonomics / Hands-On Feel
 
-<pre data-id="code-animation"><code data-trim data-line-numbers="|1,5" rust>
+<pre data-id="code-animation"><code data-trim data-line-numbers="" rust>
 #[derive(Debug, Deserialize, Serialize)]
 struct ErrorResponse {
     error: String,
