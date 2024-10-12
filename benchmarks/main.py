@@ -19,8 +19,9 @@ class ERFAUser(FastHttpUser):
     ids: Dict[str, str] = {}
 
     def on_start(self):
-        l = [string.ascii_lowercase * 1000] * 100
-        self.data = pd.concat([pd.read_csv("/assets/wine_small.csv"), pd.DataFrame(l, columns=['desc'])], ignore_index=True)
+        #l = [string.ascii_lowercase * 1000] * 100
+        #self.data = pd.concat([pd.read_csv("/assets/wine_small.csv"), pd.DataFrame(l, columns=['desc'])], ignore_index=True)
+        self.data = pd.read_csv("/assets/wine_small.csv")
         for _ in range(10):
             self.post()
 
