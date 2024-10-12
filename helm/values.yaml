@@ -1,4 +1,4 @@
-env: {}
+env: []
 
 # Default values for textserver.
 # This is a YAML-formatted file.
