@@ -7,7 +7,7 @@ resources:
     memory: 500Mi
 env:
   - name: ROCKET_DATABASES
-    value: '{texts={url="mongodb://this-does-not-exist:27017"}}'
+    value: '{texts={url="mongodb://mongodb:27017"}}'
   - name: ROCKET_ADDRESS
     value: "0.0.0.0"
   - name: ROCKET_PORT
