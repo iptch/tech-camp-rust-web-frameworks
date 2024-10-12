@@ -1,0 +1,13 @@
+[package]
+name = "text-searcher"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rocket = { version = "0.5.1", features = ["uuid", "json"] }
+rocket_db_pools = { version = "0.2.0", features = ["mongodb"] }
+bson = { version = "2.13.0" }
+
+[dependencies.uuid]
+version = "1.10.0"
+features = ["v4", "fast-rng", "macro-diagnostics"]
