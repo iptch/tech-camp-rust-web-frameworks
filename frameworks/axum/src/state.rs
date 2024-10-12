@@ -9,9 +9,7 @@ pub struct MongoAppState {
 
 impl MongoAppState {
     pub fn new(client: mongodb::Client) -> MongoAppState {
-        MongoAppState {
-            client,
-        }
+        MongoAppState { client }
     }
     pub fn client(&self) -> mongodb::Collection<TextEntry> {
         return self

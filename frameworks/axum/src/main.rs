@@ -16,11 +16,9 @@ mod state;
 async fn main() -> anyhow::Result<()> {
     let mongodb_host = env::var("MONGODB_HOST")?;
 
-    let client = mongodb::Client::with_uri_str(mongodb_host)
-        .await
-        .unwrap();
+    let client = mongodb::Client::with_uri_str(mongodb_host).await.unwrap();
 
-    let shared_state = std::sync::Arc::new(state::MongoAppState::new( client,));
+    let shared_state = std::sync::Arc::new(state::MongoAppState::new(client));
 
     // build our application with a single route
     let app = Router::new()
