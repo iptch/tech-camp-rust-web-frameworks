@@ -1,0 +1,15 @@
+resources:
+  requests:
+    cpu: 1
+    memory: 500Mi
+  limits:
+    cpu: 1
+    memory: 500Mi
+env:
+  - name: MONGODB_HOST
+    value: "mongodb://mongodb:27017"
+image:
+  repository: jklsuperuniqueregistry.azurecr.io/novelty
+  tag: latest
+service:
+  port: 3000
