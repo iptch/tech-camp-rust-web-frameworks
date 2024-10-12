@@ -15,9 +15,62 @@ highlightjs: true
 
 ## Ergonomics / Hands-On Feel
 
+## Benchmark
+
 # Axum
 
 ## Ergonomics / Hands-On Feel
+
+
+<pre data-id="code-animation"><code data-trim data-line-numbers="|2-4|9|10" rust>
+    let app = Router::new()
+        .route("/texts", post(post_text))
+        .route("/texts/:text_id", get(get_text).delete(delete_text))
+        .route("/texts/:text_id/search", get(search_text))
+        .layer(TraceLayer::new_for_http())
+        .with_state(shared_state);
+
+    // run our app with hyper, listening globally on port 3000
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+</code></pre>
+
+## {data-auto-animate=true}
+
+<pre data-id="code-animation"><code data-trim data-line-numbers="2|3|4|19-22" rust>
+async fn get_text(
+    State(state): State<Arc<state::MongoAppState>>,
+    Path(text_id): Path<String>,
+) -> Result<Json<payloads::TextPayload>, (StatusCode, Json<payloads::ErrorResponse>)> {
+    let Ok(id) = uuid::Uuid::try_parse(&text_id) else {
+        return Err((
+            StatusCode::BAD_REQUEST,
+            Json(payloads::ErrorResponse {
+                error: "invalid uuid",
+            }),
+        ));
+    };
+    match state
+        .client()
+        .find_one(bson::to_document(&TextSearchEntry { id }).unwrap())
+        .await
+    {
+        Ok(Some(result)) => Ok(Json(payloads::TextPayload { data: result.data })),
+        Ok(None) => Err((
+            StatusCode::NOT_FOUND,
+            Json(payloads::ErrorResponse { error: "not found" }),
+        )),
+        Err(_) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(payloads::ErrorResponse {
+                error: "error with mongodb",
+            }),
+        )),
+    }
+}
+</code></pre>
+
+## Benchmark
 
 # Rocket
 

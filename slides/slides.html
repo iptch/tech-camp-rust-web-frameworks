@@ -352,12 +352,59 @@
 <h2>Benchmark</h2>
 </section></section>
 <section>
-<section id="axium" class="title-slide slide level1">
-<h1>Axium</h1>
+<section id="axum" class="title-slide slide level1">
+<h1>Axum</h1>
 
 </section>
 <section id="ergonomics-hands-on-feel-1" class="slide level2">
 <h2>Ergonomics / Hands-On Feel</h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|2-4|9|10" rust>
+    let app = Router::new()
+        .route("/texts", post(post_text))
+        .route("/texts/:text_id", get(get_text).delete(delete_text))
+        .route("/texts/:text_id/search", get(search_text))
+        .layer(TraceLayer::new_for_http())
+        .with_state(shared_state);
+
+    // run our app with hyper, listening globally on port 3000
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+</code></pre>
+</section>
+<section id="section" class="slide level2" data-auto-animate="true">
+<h2 data-auto-animate="true"></h2>
+<pre data-id="code-animation"><code data-trim data-line-numbers="2|3|4|19-22" rust>
+async fn get_text(
+    State(state): State<Arc<state::MongoAppState>>,
+    Path(text_id): Path<String>,
+) -> Result<Json<payloads::TextPayload>, (StatusCode, Json<payloads::ErrorResponse>)> {
+    let Ok(id) = uuid::Uuid::try_parse(&text_id) else {
+        return Err((
+            StatusCode::BAD_REQUEST,
+            Json(payloads::ErrorResponse {
+                error: "invalid uuid",
+            }),
+        ));
+    };
+    match state
+        .client()
+        .find_one(bson::to_document(&TextSearchEntry { id }).unwrap())
+        .await
+    {
+        Ok(Some(result)) => Ok(Json(payloads::TextPayload { data: result.data })),
+        Ok(None) => Err((
+            StatusCode::NOT_FOUND,
+            Json(payloads::ErrorResponse { error: "not found" }),
+        )),
+        Err(_) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(payloads::ErrorResponse {
+                error: "error with mongodb",
+            }),
+        )),
+    }
+}
+</code></pre>
 </section>
 <section id="benchmark-1" class="slide level2">
 <h2>Benchmark</h2>
@@ -379,7 +426,7 @@ fn rocket() -> _ {
 }
 </code></pre>
 </section>
-<section id="section" class="slide level2" data-auto-animate="true">
+<section id="section-1" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers="|5-7,12" rust>
 #[macro_use]
@@ -397,7 +444,7 @@ fn rocket() -> _ {
 }
 </code></pre>
 </section>
-<section id="section-1" class="slide level2" data-auto-animate="true">
+<section id="section-2" class="slide level2" data-auto-animate="true">
 <h2 data-auto-animate="true"></h2>
 <pre data-id="code-animation"><code data-trim data-line-numbers="|12|12-24|30|2-6" rust><script type="text/template">
 #[macro_use]
@@ -435,6 +482,7 @@ fn rocket() -> _ {
 </section>
 <section id="benchmark-2" class="slide level2">
 <h2>Benchmark</h2>
+<p>Will update this when available …</p>
 </section>
 <section id="immutability" class="slide level2"
 data-auto-animate="true">
@@ -459,703 +507,7 @@ fn main() {
 <pre ><code class="rust" data-line-numbers="">let x = String::from("hello");
 let y = x;
 println!("{}", x); // invalid</code></pre>
-</section>
-<section id="section-2" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-  fn print_hello(name: String) {
-      println!("Hello, {}!", name);
-  }
-</code></pre>
-</section>
-<section id="section-3" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-  fn print_hello(name: String) {
-      println!("Hello, {}!", name);
-  }
-
-  fn main() {
-      let name = String::from("Jakob");
-      print_hello(name);
-      // can no longer use name
-  }
-</code></pre>
-</section>
-<section id="section-4" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-  fn print_hello(name: String) {
-      println!("Hello, {}!", name);
-  }
-
-  fn main() {
-      let name = String::from("Jakob");
-      print_hello(name.clone());
-      print_hello(name);
-  }
-</code></pre>
-</section>
-<section id="section-5" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-  fn print_hello(name: &str) {
-      println!("Hello, {}!", name);
-  }
-
-  fn main() {
-      let name = String::from("Jakob");
-      print_hello(&name);
-      print_hello(&name);
-  }
-</code></pre>
-</section>
-<section id="mutable-move" class="slide level2">
-<h2>Mutable Move</h2>
-<pre ><code class="rust" data-line-numbers="true">fn print_hello(mut name: String) {
-    name.push_str(" Beckmann");
-    println!("Hello, {}!", name);
-}</code></pre>
-</section>
-<section id="lifetimes" class="slide level2">
-<h2>Lifetimes</h2>
-<pre ><code class="rust" data-line-numbers="|2-11|4-6|8-10">fn main() {
-    let i = 3;
-    {
-        let borrow1 = &i;
-        println!("borrow1: {}", borrow1);
-    }
-    {
-        let borrow2 = &i;
-        println!("borrow2: {}", borrow2);
-    }
-}</code></pre>
-</section>
-<section id="section-6" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers="|4" rust>
-  struct A { x: i32 }
-
-  impl A {
-      fn borrow(&self) -> &i32 {
-          &self.x
-      }
-  }
-
-  fn main() {
-      let a = A { x: 1 };
-      println!("{}", a.borrow());
-  }
-</code></pre>
-</section>
-<section id="section-7" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers="4|" rust>
-  struct A { x: i32 }
-
-  impl<'a> A {
-      fn borrow(&'a self) -> &'a i32 {
-          &self.x
-      }
-  }
-
-  fn main() {
-      let a = A { x: 1 };
-      println!("{}", a.borrow());
-  }
-</code></pre>
-<aside class="notes">
-<ul>
-<li>lifetime parameter treated as generic definition</li>
-<li>inferred with only one argument and return</li>
-<li>needed with more than one argument</li>
-</ul>
-</aside>
-</section>
-<section id="section-8" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-  struct A<'a> { x: &'a i32 }
-
-  impl<'a> A<'a> {
-      fn borrow(&'a self) -> &'a i32 {
-          self.x
-      }
-  }
-
-  fn main() {
-      let x = 2;
-      let a = A { x: &x };
-      println!("{}", a.borrow());
-  }
-</code></pre>
-</section>
-<section id="section-9" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers="|13-15" rust>
-  struct A<'a> { x: &'a i32 }
-
-  impl<'a> A<'a> {
-      fn borrow(&'a self) -> &'a i32 {
-          self.x
-      }
-  }
-
-  fn main() {
-      let x = 2;
-      let a = A { x: &x };
-      {
-          let y = 3;
-          a.x = &y;
-      }
-      println!("{}", a.borrow());
-  }
-</code></pre>
-</section>
-<section id="section-10" class="slide level2">
-<h2></h2>
-<pre ><code class="text">error[E0597]: `y` does not live long enough
-  --&gt; src/main.rs:14:15
-   |
-13 |         let y = 3;
-   |             - binding `y` declared here
-14 |         a.x = &y;
-   |               ^^ borrowed value does not live long enough
-15 |     }
-   |     - `y` dropped here while still borrowed
-16 |     println!("{}", a.borrow());
-   |                    - borrow later used here
-
-For more information about this error, try `rustc --explain E0597`.</code></pre>
-<aside class="notes">
-<p>Ending: let’s get back to the code …</p>
-</aside>
-</section>
-<section id="section-11" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-  struct A<'a> { x: &'a i32 }
-
-  impl<'a> A<'a> {
-      fn borrow(&'a self) -> &'a i32 {
-          self.x
-      }
-  }
-
-  fn main() {
-      let x = 2;
-      let a = A { x: &x };
-      {
-          let y = 3;
-          a.x = &y;
-      }
-      println!("{}", a.borrow());
-  }
-</code></pre>
-</section>
-<section id="section-12" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-  struct A<'a> { x: &'a i32 }
-
-  impl<'a> A<'a> {
-      fn borrow(&'a self) -> &'a i32 {
-          self.x
-      }
-  }
-
-  fn main() {
-      let x = 2;
-      let a = A { x: &x };
-      {
-          let y = 3;
-          a.x = &y;
-      }
-  }
-</code></pre>
-<aside class="notes">
-<p>Compiler is smart enough to figure out we don’t access the reference
-after the lifetime</p>
-</aside>
 </section></section>
-<section id="hands-on" class="title-slide slide level1">
-<h1>Hands-On</h1>
-<p>Rustlings:</p>
-<ul>
-<li>Immutability:
-<ul>
-<li><code>exercises/01_variables</code>, try 4 and 5</li>
-</ul></li>
-<li>Ownership:
-<ul>
-<li><code>exercises/06_move_semantics</code>, try 2 to 5</li>
-</ul></li>
-<li>Lifetimes:
-<ul>
-<li><code>exercises/16_lifetimes</code>, try 1 to 3</li>
-</ul></li>
-</ul>
-<aside class="notes">
-<p>30 minutes</p>
-</aside>
-</section>
-
-<section>
-<section id="enums" class="title-slide slide level1">
-<h1>Enums</h1>
-
-</section>
-<section id="section-13" class="slide level2">
-<h2></h2>
-<pre ><code class="rust" data-line-numbers="true">// Simple enum 
-enum Seasons {
-    Winter,
-    Spring,
-    Summer,
-    Autumn,
-    Bulk,
-}
-
-let favorite_season = Seasons::Winter;
-let mut current_season = Seasons::Summer;</code></pre>
-<aside class="notes">
-<ul>
-<li>enums are not used to group related fields (like structs)</li>
-<li>enums give a way of saying that a value is one of a set of
-possibilities</li>
-</ul>
-</aside>
-</section>
-<section id="section-14" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-  // Enums can contain data
-  enum Contact{
-    Phone(u16, u16, u16, u16),
-    Email(String),
-  }
-
-  let ipt_phone = Contact::Phone(44, 735, 27, 69);
-  let ipt_email = Contact::Email(String::from("info@ipt.ch"));
-</code></pre>
-<aside class="notes">
-<p>useful to concisely represent data instead of including an enum
-inside a struct or similar constructor is automatically generated for
-enum containing fields can contain any kind of data, even structs or
-other enums</p>
-</aside>
-</section>
-<section id="section-15" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers="|10" rust>
-  // Enums can contain data
-  enum Contact{
-    Phone(u16, u16, u16, u16),
-    Email(String),
-  }
-
-  let ipt_phone = Contact::Phone(44, 735, 27, 69);
-  let ipt_email = Contact::Email(String::from("info@ipt.ch"));
-
-  ipt_phone.contact();
-</code></pre>
-</section>
-<section id="section-16" class="slide level2">
-<h2></h2>
-<pre ><code class="text">error[E0599]: no method named `contact` found for enum `Contact` in the current scope
-  --&gt; src/main.rs:13:13
-   |
-2  |   enum Contact{
-   |   ------------ method `contact` not found for this enum
-...
-13 |   ipt_phone.contact();
-   |             ^^^^^^^ method not found in `Contact`</code></pre>
-</section>
-<section id="section-17" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers="|7-15" rust>
-  // Enums can contain data
-  enum Contact{
-    Phone(u16, u16, u16, u16),
-    Email(String),
-  }
-
-  // Enums can implement methods
-  impl Contact{
-    fn contact(&self) {
-      match self {
-        Contact::Phone(a, b, c, d) => println!("dialling {}-{}-{}-{} ...", a, b, c, d),
-        Contact::Email(address) => println!("writing to {} ...", address),
-      }
-    }
-  }
-
-  let ipt_phone = Contact::Phone(44, 735, 27, 69);
-  let ipt_email = Contact::Email(String::from("info@ipt.ch"));
-
-  ipt_phone.contact(); 
-</code></pre>
-<aside class="notes">
-<p>methods can be defined on enums self will be the value that the
-method gets called on, e.g. self = ipt_phone = Contact::Phone(…)
-above</p>
-</aside>
-</section>
-<section id="section-18" class="slide level2">
-<h2></h2>
-<pre ><code class="text">dialling 44-735-27-69 ...</code></pre>
-</section>
-<section id="rusts-option-enum" class="slide level2">
-<h2>Rust’s <code>Option</code> Enum</h2>
-<pre ><code class="rust" data-line-numbers="true">enum Option&lt;T&gt; {
-    None,
-    Some(T),
-}
-
-let apples: Option&lt;u8&gt; = Some(4);
-let orange: Option&lt;u8&gt; = None;</code></pre>
-<aside class="notes">
-<p>value inside Some(T) must be of type defined with Option<T></p>
-</aside>
-</section>
-<section id="rusts-result-enum" class="slide level2">
-<h2>Rust’s <code>Result</code> Enum</h2>
-<pre ><code class="rust" data-line-numbers="true">enum Result&lt;T, E&gt; {
-    Ok(T),
-    Err(E),
-}</code></pre>
-<aside class="notes">
-<p>Ok type T can (and usually is) differnt from Err type E Results must
-be used -&gt; compiler will warn of unused/ignored Result values both Ok
-and Err variants can be () -&gt; but does it make sense?</p>
-</aside>
-</section></section>
-<section>
-<section id="pattern-matching" class="title-slide slide level1">
-<h1>Pattern Matching</h1>
-
-</section>
-<section id="section-19" class="slide level2">
-<h2></h2>
-<pre ><code class="rust" data-line-numbers="true">fn real_season(season: Seasons) -&gt; Result&lt;Seasons, String&gt; {
-     match season {
-          Seasons::Winter =&gt; Ok(season),
-          Seasons::Spring =&gt; Ok(season),
-          Seasons::Summer =&gt; Ok(season),
-          Seasons::Autumn =&gt; Ok(season),
-          Seasons::Bulk =&gt; Err("I am not so sure about that...".to_string()),
-     }
-}</code></pre>
-</section>
-<section id="section-20" class="slide level2">
-<h2></h2>
-<pre ><code class="rust" data-line-numbers="true">  fn real_season(season: Seasons) -&gt; Result&lt;Seasons, String&gt; {
-      match season {
-          other =&gt; Ok(other),
-          Seasons::Bulk =&gt; Err("I am not so sure about that...".to_string()),
-      }
-  }</code></pre>
-</section>
-<section id="section-21" class="slide level2">
-<h2></h2>
-<pre ><code class="rust" data-line-numbers="true">  // Remember our apples and oranges
-  fn buy_more(fruit: Option&lt;u8&gt;) -&gt; bool {
-    match fruit {
-      None =&gt; true,
-      Some(x) =&gt; false,
-    }
-  }</code></pre>
-<aside class="notes">
-<p>matches are exhaustive can use wildcard catch-all pattern by defining
-a variable that will be used for all non-covered cases can use _ to do
-something with non-covered cases without reusing the value</p>
-</aside>
-</section></section>
-<section>
-<section id="error-handling" class="title-slide slide level1">
-<h1>Error Handling</h1>
-
-</section>
-<section id="to-panic-or-not-panic" class="slide level2">
-<h2>To Panic or Not Panic</h2>
-<pre ><code class="rust" data-line-numbers="true">// Unrecoverable errors use panic! macro
-if totally_broken {
-    panic!("nothing we can do about this");
-}</code></pre>
-</section>
-<section class="slide level2">
-
-<pre ><code class="rust" data-line-numbers="true">// Recoverable errors using Result
-let some_variable = function_that_could_fail();
-match some_variable {
-     Ok(result) =&gt; use_result(result),
-     Err(error) =&gt; println!("this error occurred: {error:?}"),
-}
-
-// Shortcuts for Result type
-let only_valid = function_that_could_fail().unwrap();
-let only_valid = function_that_could_fail()
-    .expect("oh no something bad happened");
-
-// Or even shorter (only if return types align)
-let only_valid = function_that_could_fail()?;</code></pre>
-<aside class="notes">
-<p>when should you panic? -&gt; there is no way back, program crashes
-when to use result type and unwrap? -&gt; calling code has option to
-deal with error gracefully</p>
-</aside>
-</section>
-<section id="match-on-different-errors" class="slide level2">
-<h2>Match on Different Errors</h2>
-<pre ><code class="rust">  use std::fs::File;
-
-  fn read_tweet(source_path: &str, buffer: &mut [u8]) -&gt; usize {
-    let tweet = File::open(source_path);
-
-    match tweet {
-      Ok(file) =&gt; {
-        let bytes_read = file.read(&mut buffer);
-        match bytes_read {
-          Ok(number_of_bytes) =&gt; number_of_bytes,
-          Err(err) =&gt; panic!("Failed to read the tweet: {err:?}"),
-        },
-      },
-      Err(err) =&gt; panic!("Failed to open the tweet: {err:?}"),
-    }
-  }</code></pre>
-<aside class="notes">
-<p>all three topics, 20 minutes unwrap_or_else() -&gt; closure that
-allows a potential error to be used for further processing</p>
-</aside>
-</section></section>
-<section id="hands-on-1" class="title-slide slide level1">
-<h1>Hands-On</h1>
-<p>Rustlings:</p>
-<ul>
-<li>Enumerations -&gt; <code>exercises/08_enums</code>, try 1 and 2</li>
-<li>Pattern Matching -&gt; <code>exercises/12_options</code>, try 2 and
-3</li>
-<li>Error Handling -&gt; <code>exercises/13_error_handling</code>, start
-with 1</li>
-</ul>
-<aside class="notes">
-<p>20 minutes</p>
-</aside>
-</section>
-
-<section>
-<section id="traits" class="title-slide slide level1">
-<h1>Traits</h1>
-
-</section>
-<section id="section-22" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-// everyone has seen interfaces
-trait Closer {
-  fn close(self) -> Result<(), &'static str>;
-}
-</code></pre>
-</section>
-<section id="section-23" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-// everyone has seen interfaces
-trait Closer {
-  fn close(self) -> Result<(), &'static str>;
-}
-
-struct File {
-    // fields...
-}
-
-impl Closer for File {
-    fn close(self) -> Result<(), &'static str> {
-        Err("not implemented")
-    }
-}
-</code></pre>
-</section>
-<section id="section-24" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-// everyone has seen interfaces
-trait Closer {
-  fn close(self) -> Result<(), &'static str>;
-}
-
-// you can implement traits for any type
-impl Closer for String {
-    fn close(mut self) -> Result<(), &'static str> {
-        self.clear();
-        Ok(())
-    }
-}
-</code></pre>
-</section>
-<section id="section-25" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-// everyone has seen interfaces
-trait Closer {
-  fn close(self) -> Result<(), &'static str>;
-}
-
-// restrict your functions to take types implementing a trait
-fn close_and_exit(c: impl Closer) {
-    let _ = c.close();
-    // exit
-}
-</code></pre>
-</section>
-<section id="section-26" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers="9" rust>
-// everyone has seen interfaces
-trait Closer {
-  fn close(self) -> Result<(), &'static str>;
-}
-
-// restrict your functions to take types implementing a trait
-fn close_and_exit(c: impl Closer) {
-    let _ = c.close();
-    let _ = c.close(); // what would happen here?
-    // exit
-}
-</code></pre>
-</section>
-<section id="section-27" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-trait Closer {
-  // self is moved
-  fn close(self) -> Result<(), &'static str>;
-}
-
-trait TextStream {
-  // mutable borrow of self
-  fn read(&mut self) -> String;
-  // immutable borrow of self
-  fn at_end(&self) -> bool;
-}
-
-fn read_until_end(mut io: impl Closer + TextStream) {
-    while !io.at_end() {
-        let _ = io.read();
-    }
-    io.close();
-}
-</code></pre>
-</section>
-<section id="built-in-traits" class="slide level2">
-<h2>Built-in traits</h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-use std::fmt::Debug;
-
-struct Point {
-    x: u32,
-    y: u32
-}
-
-impl Debug for Point {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "x: {:?}, y: {:?}", self.x, self.y)
-    }
-}
-
-fn main() {
-    let origin = Point{x: 0, y: 0};
-    println!("the origin is at {:?}", &origin);
-}
-</code></pre>
-</section></section>
-<section>
-<section id="macros" class="title-slide slide level1">
-<h1>Macros</h1>
-
-</section>
-<section id="section-28" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-// define a new macro with "macro_rules!"
-macro_rules! say_hello {
-    // the macro takes no argument
-    () => {
-        // the macro will expand into the contents of this block
-        println!("Hello!")
-    };
-}
-
-fn main() {
-    // This call will expand into `println!("Hello!")`
-    say_hello!();
-}
-</code></pre>
-</section>
-<section id="section-29" class="slide level2" data-auto-animate="true">
-<h2 data-auto-animate="true"></h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-// define a new macro with "macro_rules!"
-macro_rules! say_hello {
-    // the macro takes no argument
-    () => {
-        // the macro will expand into the contents of this block
-        println!("Hello!")
-    };
-    ($expression:expr) => {
-        println!("Hello, {}!", $expression)
-    };
-}
-
-fn main() {
-    // This call will expand into `println!("Hello!")`
-    say_hello!();
-    // This call will expand into `println!("Hello, {}!", "world")`
-    say_hello!("world");
-}
-</code></pre>
-</section>
-<section id="the-vec-macro" class="slide level2">
-<h2>the <code>vec!</code> macro</h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-macro_rules! vec {
-    () => { ... };
-    ($elem:expr; $n:expr) => { ... };
-    // variadic argument support (dunno wtf this is)
-    ($($x:expr),+ $(,)?) => { ... };
-}
-</code></pre>
-</section>
-<section id="derive-macros" class="slide level2">
-<h2><code>derive</code> macros</h2>
-<pre data-id="code-animation"><code data-trim data-line-numbers rust>
-use std::fmt::Debug;
-
-#[derive(Debug)]
-struct Point {
-    x: u32,
-    y: u32
-}
-
-fn main() {
-    let origin = Point{x: 0, y: 0};
-    println!("the origin is at {:?}", &origin);
-}
-</code></pre>
-<aside class="notes">
-<p>20 minutes</p>
-</aside>
-</section></section>
-<section id="hands-on-2" class="title-slide slide level1">
-<h1>Hands-On</h1>
-<ul>
-<li><code>exercises/15_traits/</code> 1, 2, 4, 5</li>
-<li><code>exercises/21_macros/</code> 1, 2, 4</li>
-</ul>
-<aside class="notes">
-<p>20 minutes</p>
-</aside>
-</section>
     </div>
   </div>
 
