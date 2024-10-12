@@ -1,3 +1,10 @@
+resources:
+  requests:
+    cpu: 1
+    memory: 500Mi
+  limits:
+    cpu: 1
+    memory: 500Mi
 env:
   - name: ROCKET_DATABASES
     value: '{texts={url="mongodb://this-does-not-exist:27017"}}'
