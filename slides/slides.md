@@ -15,12 +15,7 @@ highlightjs: true
 
 ## Ergonomics / Hands-On Feel
 
-<pre data-id="code-animation"><code data-trim data-line-numbers="" rust>
-#[derive(Debug, Deserialize, Serialize)]
-struct ErrorResponse {
-    error: String,
-}
-
+<pre data-id="code-animation"><code data-trim data-line-numbers="|6,27|25|8,20,21,26" rust><script type="text/template">
 #[derive(Debug, Deserialize, Serialize)]
 struct Query {
     term: String,
@@ -53,7 +48,7 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 }
-</code></pre>
+</script></code></pre>
 
 ## Benchmark
 
@@ -61,7 +56,7 @@ async fn main() -> std::io::Result<()> {
 
 ## Ergonomics / Hands-On Feel
 
-<pre data-id="code-animation"><code data-trim data-line-numbers="|2-4|9|10" rust>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|2-4|9|10" rust><script type="text/template">
     let app = Router::new()
         .route("/texts", post(post_text))
         .route("/texts/:text_id", get(get_text).delete(delete_text))
@@ -72,11 +67,11 @@ async fn main() -> std::io::Result<()> {
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
-</code></pre>
+</script></code></pre>
 
 ## {data-auto-animate=true}
 
-<pre data-id="code-animation"><code data-trim data-line-numbers="|2|3|4|19-22" rust>
+<pre data-id="code-animation"><code data-trim data-line-numbers="|2|3|4|19-22" rust><script type="text/template">
 async fn get_text(
     State(state): State<Arc<state::MongoAppState>>,
     Path(text_id): Path<String>,
@@ -107,7 +102,7 @@ async fn get_text(
         )),
     }
 }
-</code></pre>
+</script></code></pre>
 
 ## Pros/Cons
 
