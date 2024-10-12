@@ -1,3 +1,9 @@
+extraConfigMaps:
+  locust-asset: /assets
+loadtest:
+  locust_locustfile_configmap: locustfile
+  pip_packages:
+    - pandas
 worker:
   replicas: 4
   resources:
