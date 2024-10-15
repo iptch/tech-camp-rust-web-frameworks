@@ -43,7 +43,7 @@ pub async fn post_text(db: Connection<TextsDatabase>, msg: Json<Message<'_>>) ->
     };
 
     match collection.insert_one(new_text, None).await {
-        Ok(_) => (Status::Created, json!(id)),
+        Ok(_) => (Status::Created, json!({"id": id})),
         Err(e) => (
             Status::InternalServerError,
             json!({"error": format!("failed to insert text into database: {e}")}),
