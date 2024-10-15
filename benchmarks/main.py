@@ -5,7 +5,7 @@ from typing import Dict
 from urllib import parse as urlparse
 
 import pandas as pd
-from locust import task, FastHttpUser
+from locust import task, FastHttpUser, run_single_user
 
 HEADER = "desc"
 
@@ -81,3 +81,5 @@ class ERFAUser(FastHttpUser):
                 resp.failure(
                     f"Incorrect response for search term '{word}' in '{self.ids[uuid]}' : {resp.text}"
                 )
+if __name__ == "__main__":
+    run_single_user(ERFAUser)
